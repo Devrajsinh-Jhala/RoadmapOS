@@ -1,7 +1,13 @@
 import { AlertTriangle, Calendar, CheckCircle2, RefreshCw } from "lucide-react";
 import { generateRoadmapAction } from "@/app/actions";
 import { SubmitButton } from "@/components/submit-button";
-import { EmptyState, FeasibilityBadge, PageHeader, Panel } from "@/components/ui";
+import {
+  EmptyState,
+  FeasibilityBadge,
+  PageGuide,
+  PageHeader,
+  Panel,
+} from "@/components/ui";
 import { formatDate } from "@/lib/format";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getSnapshot } from "@/lib/repository";
@@ -13,7 +19,7 @@ export default async function RoadmapPage() {
 
   return (
     <div className="grid gap-6">
-      <PageHeader eyebrow="Roadmap" title="The plan should fit the life.">
+      <PageHeader eyebrow="Roadmap" title="See the sequence from big goal to this week.">
         <form action={generateRoadmapAction}>
           <SubmitButton>
             <RefreshCw className="size-4" aria-hidden />
@@ -22,10 +28,21 @@ export default async function RoadmapPage() {
         </form>
       </PageHeader>
 
+      <PageGuide
+        title="Read this page from top to bottom."
+        text="This is the planning page, not the daily work page. Use it when you want to understand the bigger sequence."
+        steps={[
+          "Check the two-year vision and feasibility badge first.",
+          "Read conflicts before you trust the plan.",
+          "Use quarterly milestones to see the medium-term path.",
+          "Use the weekly plan for the next month, then execute from Today.",
+        ]}
+      />
+
       {!roadmap ? (
         <EmptyState
           title="No roadmap yet"
-          text="Add your profile and goals, then generate the first execution plan."
+          text="Complete onboarding, add goals, then click Regenerate roadmap to create the first execution plan."
         />
       ) : (
         <>

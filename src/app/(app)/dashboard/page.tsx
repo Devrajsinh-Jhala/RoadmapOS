@@ -13,7 +13,13 @@ import {
   generateRoadmapAction,
   toggleTaskAction,
 } from "@/app/actions";
-import { FeasibilityBadge, PageHeader, Panel, ProgressBar } from "@/components/ui";
+import {
+  FeasibilityBadge,
+  PageGuide,
+  PageHeader,
+  Panel,
+  ProgressBar,
+} from "@/components/ui";
 import { formatInr, toPercent } from "@/lib/format";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getSnapshot } from "@/lib/repository";
@@ -49,10 +55,11 @@ export default async function DashboardPage() {
   const constraints = snapshot.constraints;
   const completed = snapshot.todayTasks.filter((task) => task.completedAt).length;
   const total = snapshot.todayTasks.length || 1;
+  const needsSetupHelp = snapshot.goals.length === 0 || !snapshot.latestRoadmap;
 
   return (
     <div className="grid gap-6">
-      <PageHeader eyebrow="Today" title="Complete today's proof.">
+      <PageHeader eyebrow="Today" title="Do only today's essentials.">
         <form action={generateRoadmapAction}>
           <button className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-800 hover:bg-neutral-50">
             <RefreshCw className="size-4" aria-hidden />
@@ -60,6 +67,19 @@ export default async function DashboardPage() {
           </button>
         </form>
       </PageHeader>
+
+      {needsSetupHelp ? (
+        <PageGuide
+          title="Your first setup path"
+          text="If this page feels empty, nothing is broken. RoadmapOS needs your goals and one generated roadmap before it can create daily essentials."
+          steps={[
+            "Open Goals and add your main career, money, health, or lifestyle goals.",
+            "Click Generate roadmap after adding the important goals.",
+            "Come back here to complete only today's essentials.",
+            "Use Weekly Review every Sunday to adjust the plan.",
+          ]}
+        />
+      ) : null}
 
       <div className="grid gap-4 lg:grid-cols-4">
         <Panel>

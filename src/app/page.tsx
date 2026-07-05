@@ -1,16 +1,22 @@
 import {
   ArrowRight,
+  BookOpenCheck,
   CalendarCheck,
   CheckCircle2,
   ClipboardCheck,
   Compass,
   IndianRupee,
+  LayoutDashboard,
+  ListChecks,
   LogIn,
+  RotateCcw,
   Search,
+  Settings,
   ShieldCheck,
   Sparkles,
   Target,
   Timer,
+  UserRound,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -25,18 +31,76 @@ export default function Home() {
   const workflow = [
     {
       title: "Onboarding",
-      text: "Capture income, expenses, savings, time, responsibilities, energy, and blockers.",
+      text: "Add money, time, energy, responsibilities, and blockers once.",
       Icon: ClipboardCheck,
     },
     {
       title: "Goal builder",
-      text: "Add goals across career, wealth, health, skills, relationships, discipline, and lifestyle.",
+      text: "Add a few goals with deadlines, target amounts, weekly hours, and priority.",
       Icon: Target,
     },
     {
       title: "Roadmap generator",
-      text: "Convert long-term goals into yearly, quarterly, monthly, weekly, and daily plans.",
+      text: "Generate a realistic sequence, then execute from the Today page.",
       Icon: Compass,
+    },
+  ];
+
+  const firstSteps = [
+    "Sign in with name and email",
+    "Fill onboarding in 3 minutes",
+    "Add 2 to 4 important goals",
+    "Generate roadmap and follow Today",
+  ];
+
+  const pageWalkthrough = [
+    {
+      page: "Login",
+      purpose: "Create your private workspace with just name and email.",
+      action: "Use this once. No OAuth setup or password flow in the MVP.",
+      Icon: UserRound,
+    },
+    {
+      page: "Onboarding",
+      purpose: "Tell the app your real capacity: income, savings, expenses, free minutes, energy, responsibilities, and blockers.",
+      action: "Approximate values are fine. The app uses them to avoid impossible plans.",
+      Icon: ClipboardCheck,
+    },
+    {
+      page: "Goals",
+      purpose: "Add goals one by one across career, wealth, health, skills, side income, discipline, relationships, spirituality, and rewards.",
+      action: "Give each goal a deadline, priority, target amount if money is involved, and weekly hours if effort is involved.",
+      Icon: Target,
+    },
+    {
+      page: "Roadmap",
+      purpose: "Turn the goals into a two-year vision, one-year sequence, quarterly milestones, weekly plan, conflicts, and recovery guidance.",
+      action: "Read conflicts first. If the plan is risky, reduce scope or move a lower-priority goal later.",
+      Icon: Compass,
+    },
+    {
+      page: "Today",
+      purpose: "Show only today's essentials so the plan does not become another overwhelming dashboard.",
+      action: "Complete the few non-negotiables, then stop. This page is for execution.",
+      Icon: LayoutDashboard,
+    },
+    {
+      page: "Weekly Review",
+      purpose: "Tell the system what actually happened: completed work, slipped items, reasons, money saved, workouts, study hours, and energy.",
+      action: "Use it on Sunday. The next week should adapt without guilt language.",
+      Icon: RotateCcw,
+    },
+    {
+      page: "Research",
+      purpose: "Ask for current, source-backed help only when facts may have changed.",
+      action: "Use it for courses, salary ranges, prices, locations, markets, or side-income ideas, then apply useful research to the next roadmap.",
+      Icon: Search,
+    },
+    {
+      page: "Settings",
+      purpose: "Check database, sign-in, and Gemini configuration status.",
+      action: "Use it when you want to edit profile or sign out.",
+      Icon: Settings,
     },
   ];
 
@@ -61,7 +125,7 @@ export default function Home() {
       <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5">
         <Link href="/" className="flex items-center gap-3">
           <span className="grid size-10 place-items-center rounded-lg bg-[#176b5b] text-white">
-            <Target className="size-5" aria-hidden />
+            <ListChecks className="size-5" aria-hidden />
           </span>
           <span className="font-semibold text-neutral-950">RoadmapOS</span>
         </Link>
@@ -89,6 +153,16 @@ export default function Home() {
               skills, and discipline into a realistic execution plan that adapts
               when life changes.
             </p>
+            <div className="mt-5 grid gap-2">
+              {firstSteps.map((step, index) => (
+                <div key={step} className="flex items-center gap-3 text-sm text-neutral-700">
+                  <span className="grid size-6 place-items-center rounded-full bg-white text-xs font-semibold text-[#176b5b] ring-1 ring-emerald-200">
+                    {index + 1}
+                  </span>
+                  {step}
+                </div>
+              ))}
+            </div>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/login"
@@ -98,11 +172,11 @@ export default function Home() {
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
               <Link
-                href="#product-demo"
+                href="#walkthrough"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-5 text-sm font-semibold text-neutral-900 hover:bg-neutral-50"
               >
-                View product demo
-                <ShieldCheck className="size-4" aria-hidden />
+                See walkthrough
+                <BookOpenCheck className="size-4" aria-hidden />
               </Link>
             </div>
             <p className="mt-4 text-sm text-neutral-500">
@@ -191,6 +265,45 @@ export default function Home() {
             <p className="mt-2 text-sm leading-6 text-neutral-700">{text}</p>
           </div>
         ))}
+      </section>
+
+      <section id="walkthrough" className="mx-auto max-w-6xl px-4 pb-16">
+        <div className="mb-6 max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#176b5b]">
+            Page-by-page walkthrough
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold text-neutral-950">
+            What to do on each page
+          </h2>
+          <p className="mt-3 text-sm leading-6 text-neutral-600">
+            RoadmapOS is meant to be used in a simple order: setup once, add goals,
+            generate the roadmap, execute today, review weekly, and research only
+            when current facts matter.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {pageWalkthrough.map(({ page, purpose, action, Icon }, index) => (
+            <div
+              key={page}
+              className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="grid size-9 place-items-center rounded-lg bg-[#176b5b] text-sm font-semibold text-white">
+                    {index + 1}
+                  </span>
+                  <h3 className="text-base font-semibold text-neutral-950">{page}</h3>
+                </div>
+                <Icon className="size-5 shrink-0 text-[#176b5b]" aria-hidden />
+              </div>
+              <p className="mt-4 text-sm leading-6 text-neutral-700">{purpose}</p>
+              <p className="mt-3 rounded-lg border border-neutral-200 bg-[#fbfaf6] p-3 text-sm leading-6 text-neutral-700">
+                {action}
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-16">

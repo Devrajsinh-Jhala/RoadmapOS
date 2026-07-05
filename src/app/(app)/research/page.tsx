@@ -1,7 +1,14 @@
 import { ExternalLink, FlaskConical, Search, Wand2 } from "lucide-react";
 import { applyResearchAction, runResearchAction } from "@/app/actions";
 import { SubmitButton } from "@/components/submit-button";
-import { Field, inputClass, PageHeader, Panel, textareaClass } from "@/components/ui";
+import {
+  Field,
+  inputClass,
+  PageGuide,
+  PageHeader,
+  Panel,
+  textareaClass,
+} from "@/components/ui";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getSnapshot } from "@/lib/repository";
 
@@ -11,7 +18,18 @@ export default async function ResearchPage() {
 
   return (
     <div className="grid gap-6">
-      <PageHeader eyebrow="Research" title="Attach live context only when it matters." />
+      <PageHeader eyebrow="Research" title="Use live research only when the plan needs current facts." />
+
+      <PageGuide
+        title="Research is optional, not a daily habit."
+        text="Use this page for things that change over time: courses, salary ranges, product prices, locations, markets, or side-income ideas."
+        steps={[
+          "Choose a goal if the research should improve one specific goal.",
+          "Ask one practical question with your constraints.",
+          "Read the answer and citations.",
+          "Click Apply only if you want it included in the next roadmap.",
+        ]}
+      />
 
       <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
         <Panel>
@@ -20,7 +38,7 @@ export default async function ResearchPage() {
             <h2 className="text-lg font-semibold text-neutral-950">Ask planner</h2>
           </div>
           <form action={runResearchAction} className="mt-4 grid gap-4">
-            <Field label="Attach to goal">
+            <Field label="Attach to goal" hint="Choose General roadmap if the question affects your whole plan.">
               <select className={inputClass} name="goalId" defaultValue="">
                 <option value="">General roadmap</option>
                 {snapshot.goals.map((goal) => (
@@ -30,11 +48,11 @@ export default async function ResearchPage() {
                 ))}
               </select>
             </Field>
-            <Field label="Question">
+            <Field label="Question" hint="Ask for a comparison, estimate, current options, or practical path.">
               <textarea
                 className={textareaClass}
                 name="query"
-                placeholder="Find a practical 6-month AI learning roadmap for my current schedule"
+                placeholder="Example: Compare practical AI courses for a full-stack developer with 5 study hours per week."
                 required
               />
             </Field>

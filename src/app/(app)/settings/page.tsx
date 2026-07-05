@@ -1,7 +1,7 @@
 import { Database, KeyRound, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { signOutAction } from "@/app/login/actions";
-import { PageHeader, Panel } from "@/components/ui";
+import { PageGuide, PageHeader, Panel } from "@/components/ui";
 
 export default function SettingsPage() {
   const checks = [
@@ -12,7 +12,17 @@ export default function SettingsPage() {
 
   return (
     <div className="grid gap-6">
-      <PageHeader eyebrow="Settings" title="Workspace status and account." />
+      <PageHeader eyebrow="Settings" title="Check setup, edit profile, or sign out." />
+
+      <PageGuide
+        title="You usually do not need this page."
+        text="Settings exists for quick checks after deployment and basic account actions."
+        steps={[
+          "Check whether Neon and Gemini are configured.",
+          "Use Edit profile when income, expenses, time, or blockers change.",
+          "Sign out if you want to switch workspace.",
+        ]}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Panel>

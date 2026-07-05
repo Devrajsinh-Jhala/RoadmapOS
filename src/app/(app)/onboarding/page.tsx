@@ -1,7 +1,14 @@
 import { Save } from "lucide-react";
 import { saveOnboardingAction } from "@/app/actions";
 import { SubmitButton } from "@/components/submit-button";
-import { Field, inputClass, PageHeader, Panel, textareaClass } from "@/components/ui";
+import {
+  Field,
+  inputClass,
+  PageGuide,
+  PageHeader,
+  Panel,
+  textareaClass,
+} from "@/components/ui";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getSnapshot } from "@/lib/repository";
 
@@ -11,12 +18,23 @@ export default async function OnboardingPage() {
 
   return (
     <div className="grid gap-6">
-      <PageHeader eyebrow="Onboarding" title="Set the constraints before the dream." />
+      <PageHeader eyebrow="Onboarding" title="Tell RoadmapOS what your real week looks like." />
+
+      <PageGuide
+        title="Finish this once, then update only when life changes."
+        text="These numbers help the app avoid fantasy plans. Use approximate values; precision can improve later."
+        steps={[
+          "Enter monthly money numbers in INR.",
+          "Enter free time per day in minutes, not hours.",
+          "Write the responsibilities and blockers that usually break your routine.",
+          "Save profile, then add your goals.",
+        ]}
+      />
 
       <Panel>
         <form action={saveOnboardingAction} className="grid gap-5">
           <div className="grid gap-4 md:grid-cols-3">
-            <Field label="Age">
+            <Field label="Age" hint="Years completed. Example: 23.">
               <input
                 className={inputClass}
                 name="age"
@@ -26,7 +44,7 @@ export default async function OnboardingPage() {
                 required
               />
             </Field>
-            <Field label="Monthly income">
+            <Field label="Monthly income (INR)" hint="Your usual take-home amount per month.">
               <input
                 className={inputClass}
                 name="monthlyIncome"
@@ -36,7 +54,7 @@ export default async function OnboardingPage() {
                 required
               />
             </Field>
-            <Field label="Current savings">
+            <Field label="Current savings (INR)" hint="Cash, bank balance, mutual funds, or liquid savings you can plan with.">
               <input
                 className={inputClass}
                 name="currentSavings"
@@ -49,7 +67,7 @@ export default async function OnboardingPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
-            <Field label="Fixed monthly expenses">
+            <Field label="Fixed monthly expenses (INR)" hint="Rent, EMI, bills, family support, food, transport, and subscriptions.">
               <input
                 className={inputClass}
                 name="fixedExpenses"
@@ -59,7 +77,7 @@ export default async function OnboardingPage() {
                 required
               />
             </Field>
-            <Field label="Free time per day">
+            <Field label="Free time per day in minutes" hint="Example: 150 means about 2.5 focused hours outside work and sleep.">
               <input
                 className={inputClass}
                 name="dailyAvailableMinutes"
@@ -70,7 +88,7 @@ export default async function OnboardingPage() {
                 required
               />
             </Field>
-            <Field label="Preferred intensity">
+            <Field label="Preferred intensity" hint="Balanced is safest for long-term consistency.">
               <select
                 className={inputClass}
                 name="intensity"
@@ -84,27 +102,30 @@ export default async function OnboardingPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Energy level">
+            <Field label="Energy level" hint="Use plain language: fresh morning, tired after work, strong weekends, etc.">
               <input
                 className={inputClass}
                 name="energyLevel"
+                placeholder="Balanced after work"
                 defaultValue={profile?.energyLevel ?? "Balanced after work"}
                 required
               />
             </Field>
-            <Field label="Family responsibilities">
+            <Field label="Family responsibilities" hint="Mention support, errands, care duties, commute, or fixed family time.">
               <textarea
                 className={textareaClass}
                 name="familyResponsibilities"
+                placeholder="Example: family support, weekend errands, fixed evening calls"
                 defaultValue={profile?.familyResponsibilities ?? ""}
               />
             </Field>
           </div>
 
-          <Field label="Biggest blockers">
+          <Field label="Biggest blockers" hint="What usually stops execution: fatigue, phone, late work, relapse, travel, uncertainty.">
             <textarea
               className={textareaClass}
               name="blockers"
+              placeholder="Example: phone at night, inconsistent sleep, work calls after 8 PM"
               defaultValue={profile?.blockers ?? ""}
             />
           </Field>

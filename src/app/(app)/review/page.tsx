@@ -1,7 +1,14 @@
 import { ClipboardCheck, Save } from "lucide-react";
 import { submitWeeklyReviewAction } from "@/app/actions";
 import { SubmitButton } from "@/components/submit-button";
-import { Field, inputClass, PageHeader, Panel, textareaClass } from "@/components/ui";
+import {
+  Field,
+  inputClass,
+  PageGuide,
+  PageHeader,
+  Panel,
+  textareaClass,
+} from "@/components/ui";
 import { formatDate } from "@/lib/format";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getSnapshot } from "@/lib/repository";
@@ -13,22 +20,46 @@ export default async function ReviewPage() {
 
   return (
     <div className="grid gap-6">
-      <PageHeader eyebrow="Weekly Review" title="Adjust the plan without drama." />
+      <PageHeader eyebrow="Weekly Review" title="Update the plan once a week." />
+
+      <PageGuide
+        title="Use this every Sunday or after a bad week."
+        text="The review is not a report card. It tells the planner what actually happened so next week becomes realistic."
+        steps={[
+          "Write what got done, even if it was small.",
+          "Write what slipped and the real reason.",
+          "Add simple metrics for money, workouts, study, and discipline.",
+          "Save review to create a recovery plan for the next week.",
+        ]}
+      />
 
       <div className="grid gap-6 xl:grid-cols-[1fr_0.85fr]">
         <Panel>
           <form action={submitWeeklyReviewAction} className="grid gap-4">
-            <Field label="What completed?">
-              <textarea className={textareaClass} name="completed" required />
+            <Field label="What completed?" hint="List wins from the week. Short bullet-style text is fine.">
+              <textarea
+                className={textareaClass}
+                name="completed"
+                placeholder="Example: 3 workouts, 4 study blocks, tracked expenses."
+                required
+              />
             </Field>
-            <Field label="What slipped?">
-              <textarea className={textareaClass} name="slipped" />
+            <Field label="What slipped?" hint="Name the tasks or goals that did not happen.">
+              <textarea
+                className={textareaClass}
+                name="slipped"
+                placeholder="Example: skipped interview prep and sleep routine."
+              />
             </Field>
-            <Field label="Why did it slip?">
-              <textarea className={textareaClass} name="reasons" />
+            <Field label="Why did it slip?" hint="Be practical: workload, energy, travel, phone, unclear next step, etc.">
+              <textarea
+                className={textareaClass}
+                name="reasons"
+                placeholder="Example: late work calls and no fixed study slot."
+              />
             </Field>
             <div className="grid gap-4 md:grid-cols-4">
-              <Field label="Saved this week">
+              <Field label="Money saved this week (INR)">
                 <input
                   className={inputClass}
                   name="savedAmount"
@@ -37,7 +68,7 @@ export default async function ReviewPage() {
                   defaultValue="0"
                 />
               </Field>
-              <Field label="Workouts">
+              <Field label="Workouts completed">
                 <input
                   className={inputClass}
                   name="workoutsDone"
@@ -47,7 +78,7 @@ export default async function ReviewPage() {
                   defaultValue="3"
                 />
               </Field>
-              <Field label="Study hours">
+              <Field label="Study or skill hours">
                 <input
                   className={inputClass}
                   name="studyHours"
@@ -57,7 +88,7 @@ export default async function ReviewPage() {
                   defaultValue="5"
                 />
               </Field>
-              <Field label="Discipline score">
+              <Field label="Discipline score (1-10)">
                 <input
                   className={inputClass}
                   name="disciplineScore"
@@ -68,7 +99,7 @@ export default async function ReviewPage() {
                 />
               </Field>
             </div>
-            <Field label="Next-week energy">
+            <Field label="Next-week energy" hint="Example: low, medium, high, travel-heavy, family-heavy.">
               <input
                 className={inputClass}
                 name="energyNextWeek"

@@ -16,6 +16,8 @@ export default defineConfig({
     reuseExistingServer: false,
     env: {
       ROADMAPOS_DEMO_MODE: "true",
+      GEMINI_API_KEY: "",
+      GOOGLE_API_KEY: "",
     },
   },
   projects: [

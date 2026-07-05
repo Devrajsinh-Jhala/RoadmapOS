@@ -59,6 +59,19 @@ export function AppShell({
           })}
         </nav>
 
+        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50/70 p-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">
+            Use in order
+          </p>
+          <ol className="mt-3 grid gap-2 text-xs leading-5 text-neutral-700">
+            <li>1. Onboarding: money, time, blockers</li>
+            <li>2. Goals: add 2 to 4 goals</li>
+            <li>3. Roadmap: generate the sequence</li>
+            <li>4. Today: execute only essentials</li>
+            <li>5. Review: adjust weekly</li>
+          </ol>
+        </div>
+
         <div className="mt-auto rounded-lg border border-neutral-200 bg-neutral-50 p-3">
           <p className="text-xs uppercase tracking-[0.14em] text-neutral-500">
             Workspace
