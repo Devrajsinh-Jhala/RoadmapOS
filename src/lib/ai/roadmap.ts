@@ -293,6 +293,27 @@ function collectCitations(value: unknown, citations = new Map<string, ResearchCi
   return citations;
 }
 
+export function createFallbackResearchSummary(
+  query: string,
+  goal?: Goal,
+  error?: unknown,
+) {
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  const quotaLimited = /429|quota|rate limit/i.test(message);
+  const reason = quotaLimited
+    ? "Live grounded research is temporarily unavailable because the AI provider quota or rate limit was reached."
+    : "Live grounded research is temporarily unavailable right now.";
+
+  return [
+    `${reason} RoadmapOS saved this as a planning note so the workflow does not break.`,
+    `Question: ${query}`,
+    goal
+      ? `Related goal: ${goal.title}.`
+      : "Related goal: general roadmap.",
+    "Next move: retry research later for fresh sources, or apply this note if the question itself clarifies how the roadmap should change.",
+  ].join("\n\n");
+}
+
 export async function runGroundedResearch(
   profile: UserProfile,
   goals: Goal[],
@@ -304,11 +325,10 @@ export async function runGroundedResearch(
 
   if (!client) {
     return {
-      summary:
-        "Demo research summary: add GEMINI_API_KEY to receive live Google-grounded sources. For now, treat this as a saved planning note and apply it only if it clarifies the goal sequence.",
+      summary: createFallbackResearchSummary(query, goal),
       grounded: false,
       citations: [],
-      raw: {},
+      raw: { fallback: true, reason: "missing-api-key" },
     };
   }
 
@@ -319,18 +339,30 @@ export async function runGroundedResearch(
     `Question: ${query}`,
   ].join("\n\n");
 
-  const interaction = await client.interactions.create({
-    model: DEFAULT_RESEARCH_MODEL,
-    input,
-    tools: [{ type: "google_search" }],
-  });
-  const raw = JSON.parse(JSON.stringify(interaction)) as Record<string, unknown>;
-  const citations = [...collectCitations(raw).values()].slice(0, 8);
+  try {
+    const interaction = await client.interactions.create({
+      model: DEFAULT_RESEARCH_MODEL,
+      input,
+      tools: [{ type: "google_search" }],
+    });
+    const raw = JSON.parse(JSON.stringify(interaction)) as Record<string, unknown>;
+    const citations = [...collectCitations(raw).values()].slice(0, 8);
 
-  return {
-    summary: interaction.output_text ?? "Grounded research completed, but no text was returned.",
-    grounded: citations.length > 0,
-    citations,
-    raw,
-  };
+    return {
+      summary: interaction.output_text ?? "Grounded research completed, but no text was returned.",
+      grounded: citations.length > 0,
+      citations,
+      raw,
+    };
+  } catch (error) {
+    return {
+      summary: createFallbackResearchSummary(query, goal, error),
+      grounded: false,
+      citations: [],
+      raw: {
+        fallback: true,
+        reason: error instanceof Error ? error.message : String(error),
+      },
+    };
+  }
 }

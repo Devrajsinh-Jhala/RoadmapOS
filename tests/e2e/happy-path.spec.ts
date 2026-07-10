@@ -42,5 +42,9 @@ test("demo user can move through the RoadmapOS flow", async ({ page }) => {
     .getByLabel("Question")
     .fill("Find a practical AI learning path for a full-stack developer in India.");
   await page.getByRole("button", { name: /run research/i }).click();
-  await expect(page.getByText(/AI learning path/i)).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Find a practical AI learning path for a full-stack developer in India.",
+    }),
+  ).toBeVisible();
 });

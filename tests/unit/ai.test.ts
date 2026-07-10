@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createFallbackRoadmap, parseJsonFromText } from "@/lib/ai/roadmap";
+import {
+  createFallbackResearchSummary,
+  createFallbackRoadmap,
+  parseJsonFromText,
+} from "@/lib/ai/roadmap";
 import { analyzeConstraints } from "@/lib/constraints";
 import type { Goal, UserProfile } from "@/lib/types";
 
@@ -45,5 +49,17 @@ describe("AI utilities", () => {
     const roadmap = createFallbackRoadmap(profile, goals, analyzeConstraints(profile, goals));
     expect(roadmap.dailyNonNegotiables.length).toBeGreaterThan(0);
     expect(roadmap.yearRoadmap.join(" ")).toContain("routine");
+  });
+
+  it("creates a non-crashing research fallback for quota errors", () => {
+    const summary = createFallbackResearchSummary(
+      "Find practical DSA and LLD preparation steps.",
+      undefined,
+      new Error("429 You exceeded your current quota"),
+    );
+
+    expect(summary).toContain("quota");
+    expect(summary).toContain("Question: Find practical DSA");
+    expect(summary).toContain("retry research later");
   });
 });
