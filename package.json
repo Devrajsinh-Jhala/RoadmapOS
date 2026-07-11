@@ -15,7 +15,8 @@
     "predeploy": "npm run env:check && npm run verify",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
-    "db:migrate:kit": "drizzle-kit migrate"
+    "db:migrate:kit": "drizzle-kit migrate",
+    "assets:gifs": "node scripts/generate-landing-gifs.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",

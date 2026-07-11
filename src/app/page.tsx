@@ -1,371 +1,304 @@
 import {
   ArrowRight,
-  BookOpenCheck,
+  BadgeIndianRupee,
   CalendarCheck,
   CheckCircle2,
   ClipboardCheck,
   Compass,
-  IndianRupee,
-  LayoutDashboard,
   ListChecks,
   LogIn,
   RotateCcw,
   Search,
-  Settings,
   ShieldCheck,
   Sparkles,
   Target,
   Timer,
-  UserRound,
 } from "lucide-react";
 import Link from "next/link";
+import { DemoGifGallery, HeroWorkspace, LandingTour } from "@/components/landing-demo";
+
+const workflow = [
+  {
+    number: "01",
+    title: "Tell it what is true",
+    text: "Add your money, available time, responsibilities, energy, and blockers.",
+    Icon: ClipboardCheck,
+  },
+  {
+    number: "02",
+    title: "Choose the important goals",
+    text: "Set deadlines, priority, cost, and weekly effort for two to four goals.",
+    Icon: Target,
+  },
+  {
+    number: "03",
+    title: "Get the right order",
+    text: "RoadmapOS checks constraints, reveals conflicts, and builds the roadmap.",
+    Icon: Compass,
+  },
+  {
+    number: "04",
+    title: "Adjust every week",
+    text: "Complete today’s essentials and use one weekly review to keep the plan honest.",
+    Icon: RotateCcw,
+  },
+];
+
+const capabilities = [
+  {
+    title: "Money-aware",
+    text: "Compares income, fixed expenses, savings, goal costs, and deadlines.",
+    Icon: BadgeIndianRupee,
+    tone: "bg-emerald-100 text-emerald-800",
+  },
+  {
+    title: "Time-aware",
+    text: "Stops study, fitness, and side-income plans from overloading the same week.",
+    Icon: Timer,
+    tone: "bg-blue-100 text-blue-800",
+  },
+  {
+    title: "Conflict-aware",
+    text: "Shows what must move when every goal cannot happen at the same time.",
+    Icon: ShieldCheck,
+    tone: "bg-amber-100 text-amber-900",
+  },
+  {
+    title: "Reality-aware",
+    text: "Replans around missed weeks, changing energy, and actual progress.",
+    Icon: CalendarCheck,
+    tone: "bg-rose-100 text-rose-800",
+  },
+  {
+    title: "Research-ready",
+    text: "Uses manual, source-backed research when courses, salaries, or prices matter.",
+    Icon: Search,
+    tone: "bg-cyan-100 text-cyan-800",
+  },
+  {
+    title: "Calm by design",
+    text: "Turns the whole roadmap into a short list of daily non-negotiables.",
+    Icon: CheckCircle2,
+    tone: "bg-violet-100 text-violet-800",
+  },
+];
 
 export default function Home() {
-  const dashboardStats = [
-    { title: "Money load", text: "52% committed", Icon: IndianRupee },
-    { title: "Time load", text: "68% planned", Icon: Timer },
-    { title: "Goal health", text: "Balanced", Icon: ShieldCheck },
-    { title: "Research", text: "Sources saved", Icon: Search },
-  ];
-
-  const workflow = [
-    {
-      title: "Onboarding",
-      text: "Add money, time, energy, responsibilities, and blockers once.",
-      Icon: ClipboardCheck,
-    },
-    {
-      title: "Goal builder",
-      text: "Add a few goals with deadlines, target amounts, weekly hours, and priority.",
-      Icon: Target,
-    },
-    {
-      title: "Roadmap generator",
-      text: "Generate a realistic sequence, then execute from the Today page.",
-      Icon: Compass,
-    },
-  ];
-
-  const firstSteps = [
-    "Sign in with name and email",
-    "Fill onboarding in 3 minutes",
-    "Add 2 to 4 important goals",
-    "Generate roadmap and follow Today",
-  ];
-
-  const pageWalkthrough = [
-    {
-      page: "Login",
-      purpose: "Create your private workspace with just name and email.",
-      action: "Use this once. No OAuth setup or password flow in the MVP.",
-      Icon: UserRound,
-    },
-    {
-      page: "Onboarding",
-      purpose: "Tell the app your real capacity: income, savings, expenses, free minutes, energy, responsibilities, and blockers.",
-      action: "Approximate values are fine. The app uses them to avoid impossible plans.",
-      Icon: ClipboardCheck,
-    },
-    {
-      page: "Goals",
-      purpose: "Add goals one by one across career, wealth, health, skills, side income, discipline, relationships, spirituality, and rewards.",
-      action: "Give each goal a deadline, priority, target amount if money is involved, and weekly hours if effort is involved.",
-      Icon: Target,
-    },
-    {
-      page: "Roadmap",
-      purpose: "Turn the goals into a two-year vision, one-year sequence, quarterly milestones, weekly plan, conflicts, and recovery guidance.",
-      action: "Read conflicts first. If the plan is risky, reduce scope or move a lower-priority goal later.",
-      Icon: Compass,
-    },
-    {
-      page: "Today",
-      purpose: "Show only today's essentials so the plan does not become another overwhelming dashboard.",
-      action: "Complete the few non-negotiables, then stop. This page is for execution.",
-      Icon: LayoutDashboard,
-    },
-    {
-      page: "Weekly Review",
-      purpose: "Tell the system what actually happened: completed work, slipped items, reasons, money saved, workouts, study hours, and energy.",
-      action: "Use it on Sunday. The next week should adapt without guilt language.",
-      Icon: RotateCcw,
-    },
-    {
-      page: "Research",
-      purpose: "Ask for current, source-backed help only when facts may have changed.",
-      action: "Use it for courses, salary ranges, prices, locations, markets, or side-income ideas, then apply useful research to the next roadmap.",
-      Icon: Search,
-    },
-    {
-      page: "Settings",
-      purpose: "Check database, sign-in, and Gemini configuration status.",
-      action: "Use it when you want to edit profile or sign out.",
-      Icon: Settings,
-    },
-  ];
-
-  const dailyTasks = [
-    "Complete one focused skill block",
-    "Move one money goal forward",
-    "Finish health or recovery action",
-    "Answer one reflection prompt",
-  ];
-
-  const functionality = [
-    "Constraint-aware planning before AI generation",
-    "Daily non-negotiables instead of noisy task lists",
-    "Weekly review with recovery planning",
-    "Conflict detector for money, time, and deadlines",
-    "Manual research mode with source-backed planning",
-    "PWA-ready app structure for mobile use",
-  ];
-
   return (
-    <div className="min-h-screen bg-[#f7f5ef] text-neutral-950">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-lg bg-[#176b5b] text-white">
-            <ListChecks className="size-5" aria-hidden />
-          </span>
-          <span className="font-semibold text-neutral-950">RoadmapOS</span>
-        </Link>
-        <Link
-          href="/login"
-          className="inline-flex h-10 items-center gap-2 rounded-lg border border-neutral-300 bg-white px-3 text-sm font-semibold text-neutral-800 hover:bg-neutral-50"
-        >
-          <LogIn className="size-4" aria-hidden />
-          Sign in
-        </Link>
+    <div className="min-h-screen bg-[#f7f6f1] text-neutral-950">
+      <header className="sticky top-0 z-30 border-b border-neutral-200/80 bg-[#f7f6f1]/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+          <Link href="/" className="flex items-center gap-3 font-semibold text-neutral-950">
+            <span className="grid size-9 place-items-center rounded-lg bg-[#176b5b] text-white">
+              <ListChecks className="size-4" aria-hidden />
+            </span>
+            RoadmapOS
+          </Link>
+          <nav className="hidden items-center gap-6 text-sm font-medium text-neutral-600 md:flex" aria-label="Landing page">
+            <Link href="#how-it-works" className="hover:text-neutral-950">How it works</Link>
+            <Link href="#demos" className="hover:text-neutral-950">Product demos</Link>
+            <Link href="#walkthrough" className="hover:text-neutral-950">Page tour</Link>
+          </nav>
+          <Link
+            href="/login"
+            className="inline-flex h-10 items-center gap-2 rounded-lg border border-neutral-300 bg-white px-3 text-sm font-semibold text-neutral-800 transition hover:border-neutral-400 hover:bg-neutral-50"
+          >
+            <LogIn className="size-4" aria-hidden />
+            Sign in
+          </Link>
+        </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 pb-12 pt-8 lg:pt-14">
-        <section className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <p className="inline-flex h-8 items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">
+      <main>
+        <section className="overflow-hidden px-4 pb-3 pt-12 sm:px-6 sm:pb-4 sm:pt-16">
+          <div className="mx-auto max-w-6xl text-center">
+            <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1.5 text-xs font-semibold text-[#176b5b]">
               <Sparkles className="size-3.5" aria-hidden />
-              Constraint-aware life planning
+              A life plan built around real constraints
             </p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.05] text-neutral-950 md:text-6xl">
+            <h1 className="mt-5 text-5xl font-semibold leading-none text-neutral-950 sm:text-7xl">
               RoadmapOS
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-neutral-700">
-              Turn scattered goals across career, money, health, relationships,
-              skills, and discipline into a realistic execution plan that adapts
-              when life changes.
+            <p className="mx-auto mt-5 max-w-3xl text-xl font-medium leading-8 text-neutral-800 sm:text-2xl">
+              Put your big goals in the right order.
             </p>
-            <div className="mt-5 grid gap-2">
-              {firstSteps.map((step, index) => (
-                <div key={step} className="flex items-center gap-3 text-sm text-neutral-700">
-                  <span className="grid size-6 place-items-center rounded-full bg-white text-xs font-semibold text-[#176b5b] ring-1 ring-emerald-200">
-                    {index + 1}
-                  </span>
-                  {step}
-                </div>
-              ))}
-            </div>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-neutral-600 sm:text-lg">
+              Turn career, money, health, skills, and life goals into a realistic daily and weekly plan that changes when your life does.
+            </p>
+            <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 href="/login"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#176b5b] px-5 text-sm font-semibold text-white shadow-sm hover:bg-[#115246]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#176b5b] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#125348]"
               >
                 Start with login
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
               <Link
-                href="#walkthrough"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-5 text-sm font-semibold text-neutral-900 hover:bg-neutral-50"
+                href="#demos"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-5 text-sm font-semibold text-neutral-900 transition hover:border-neutral-400"
               >
-                See walkthrough
-                <BookOpenCheck className="size-4" aria-hidden />
+                Watch product demos
               </Link>
             </div>
-            <p className="mt-4 text-sm text-neutral-500">
-              Login first, then build your private roadmap workspace.
-            </p>
+            <p className="mt-4 text-xs text-neutral-500">Sign in with name and email. No password setup in this MVP.</p>
           </div>
+        </section>
 
-          <div
-            id="product-demo"
-            className="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm"
-          >
-            <div className="flex items-center justify-between gap-4 border-b border-neutral-200 pb-4">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">
-                  Demo workspace
-                </p>
-                <h2 className="mt-1 text-xl font-semibold text-neutral-950">
-                  This week&apos;s plan
-                </h2>
-              </div>
-              <span className="inline-flex h-8 items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 text-xs font-semibold text-emerald-800">
-                Realistic
-              </span>
+        <section className="border-b border-neutral-200 px-4 pb-12 sm:px-6" aria-label="RoadmapOS product preview">
+          <div className="mx-auto max-w-6xl text-center">
+            <HeroWorkspace />
+          </div>
+        </section>
+
+        <section id="how-it-works" className="bg-white px-4 py-16 sm:px-6 sm:py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold text-[#176b5b]">THE SIMPLE LOOP</p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight text-neutral-950 sm:text-4xl">
+                You bring the goals. RoadmapOS finds the order.
+              </h2>
             </div>
-
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {dashboardStats.map(({ title, text, Icon }) => (
+            <div className="mt-10 grid border-y border-neutral-300 md:grid-cols-4">
+              {workflow.map(({ number, title, text, Icon }, index) => (
                 <div
-                  key={title}
-                  className="rounded-lg border border-neutral-200 bg-[#fbfaf6] p-4"
+                  key={number}
+                  className={`relative px-1 py-6 md:px-5 ${index < workflow.length - 1 ? "border-b border-neutral-300 md:border-b-0 md:border-r" : ""}`}
                 >
-                  <Icon className="size-5 text-[#176b5b]" aria-hidden />
-                  <h2 className="mt-4 text-sm font-semibold text-neutral-950">
-                    {title}
-                  </h2>
-                  <p className="mt-1 text-sm text-neutral-600">{text}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-neutral-400">{number}</span>
+                    <Icon className="size-5 text-[#176b5b]" aria-hidden />
+                  </div>
+                  <h3 className="mt-8 text-base font-semibold text-neutral-950">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-neutral-600">{text}</p>
                 </div>
               ))}
             </div>
+          </div>
+        </section>
 
-            <div className="mt-4 rounded-lg border border-neutral-200 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.14em] text-neutral-500">
-                    Today
-                  </p>
-                  <h3 className="mt-1 text-lg font-semibold text-neutral-950">
-                    Non-negotiables
-                  </h3>
-                </div>
-                <CalendarCheck className="size-6 text-blue-600" aria-hidden />
+        <section id="demos" className="border-y border-neutral-200 bg-[#eef1ed] px-4 py-16 sm:px-6 sm:py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-xs font-semibold text-[#176b5b]">SEE IT IN MOTION</p>
+                <h2 className="mt-3 text-3xl font-semibold leading-tight text-neutral-950 sm:text-4xl">
+                  From “I want this” to “I know today’s move.”
+                </h2>
               </div>
-              <div className="mt-5 grid gap-3">
-                {dailyTasks.map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-center gap-3 rounded-lg bg-neutral-50 p-3 text-sm text-neutral-800"
-                  >
-                    <span className="grid size-7 place-items-center rounded-full bg-emerald-100 text-emerald-800">
-                      <CheckCircle2 className="size-3.5" aria-hidden />
-                    </span>
-                    {item}
-                  </div>
-                ))}
-              </div>
+              <p className="max-w-md text-sm leading-6 text-neutral-600">
+                Three short loops show how RoadmapOS plans, protects priorities, and recovers when a week goes off course.
+              </p>
             </div>
+            <div className="mt-10">
+              <DemoGifGallery />
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-neutral-950 px-4 py-16 text-white sm:px-6 sm:py-20">
+          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+            <div className="max-w-md">
+              <p className="text-xs font-semibold text-[#f4c95d]">BEFORE AI MAKES THE PLAN</p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
+                First, the numbers have to agree.
+              </h2>
+              <p className="mt-5 text-base leading-7 text-neutral-300">
+                The constraint engine checks monthly surplus, savings targets, goal costs, deadlines, and weekly hours before Gemini creates the roadmap.
+              </p>
+            </div>
+            <div className="grid gap-px overflow-hidden rounded-lg border border-white/15 bg-white/15 sm:grid-cols-2">
+              {[
+                ["Monthly surplus", "₹49,000", "Enough for two active money goals"],
+                ["Weekly capacity", "18 hours", "12 hours currently planned"],
+                ["Purchase impact", "+2 months", "A reward purchase delays the home deposit"],
+                ["Plan decision", "Protect P1", "Move one lower-priority goal to next quarter"],
+              ].map(([label, value, note], index) => (
+                <div key={label} className="bg-neutral-950 p-5 sm:p-6">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-xs text-neutral-400">{label}</p>
+                    <span className={`size-2 rounded-full ${index === 2 ? "bg-[#ef6b55]" : index === 3 ? "bg-[#f4c95d]" : "bg-emerald-400"}`} />
+                  </div>
+                  <p className="mt-4 text-2xl font-semibold text-white">{value}</p>
+                  <p className="mt-2 text-sm leading-6 text-neutral-400">{note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white px-4 py-16 sm:px-6 sm:py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold text-[#176b5b]">BUILT FOR THE WHOLE ROADMAP</p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight text-neutral-950 sm:text-4xl">
+                Practical help at every decision point.
+              </h2>
+            </div>
+            <div className="mt-10 grid border-t border-neutral-300 sm:grid-cols-2 lg:grid-cols-3">
+              {capabilities.map(({ title, text, Icon, tone }, index) => (
+                <div
+                  key={title}
+                  className={`py-6 sm:px-5 ${index < capabilities.length - 1 ? "border-b border-neutral-300" : ""} ${index % 3 !== 2 ? "lg:border-r" : ""}`}
+                >
+                  <span className={`grid size-9 place-items-center rounded-lg ${tone}`}>
+                    <Icon className="size-4" aria-hidden />
+                  </span>
+                  <h3 className="mt-5 text-base font-semibold text-neutral-950">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-neutral-600">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="walkthrough" className="border-y border-neutral-200 bg-[#f7f6f1] px-4 py-16 sm:px-6 sm:py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-3xl">
+              <p className="text-xs font-semibold text-[#176b5b]">PAGE-BY-PAGE WALKTHROUGH</p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight text-neutral-950 sm:text-4xl">
+                Know exactly what each page is for.
+              </h2>
+              <p className="mt-4 text-base leading-7 text-neutral-600">
+                Follow the tabs in order the first time. After setup, most days begin and end on Today.
+              </p>
+            </div>
+            <div className="mt-10">
+              <LandingTour />
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-[#f4c95d] px-4 py-14 sm:px-6 sm:py-16">
+          <div className="mx-auto flex max-w-6xl flex-col gap-7 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold text-neutral-700">ONE CLEAR PLACE TO BEGIN</p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight text-neutral-950 sm:text-4xl">
+                You do not need to fix everything today.
+              </h2>
+              <p className="mt-3 text-base leading-7 text-neutral-800">
+                Build the roadmap, then complete today’s proof.
+              </p>
+            </div>
+            <Link
+              href="/login"
+              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-lg bg-neutral-950 px-5 text-sm font-semibold text-white transition hover:bg-neutral-800"
+            >
+              Build my roadmap
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
           </div>
         </section>
       </main>
 
-      <section className="mx-auto grid max-w-6xl gap-4 px-4 pb-14 md:grid-cols-3">
-        {workflow.map(({ title, text, Icon }, index) => (
-          <div
-            key={title}
-            className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm"
-          >
-            <div className="flex items-center justify-between">
-              <span className="grid size-9 place-items-center rounded-lg bg-[#176b5b] text-sm font-semibold text-white">
-                {index + 1}
-              </span>
-              <Icon className="size-5 text-[#176b5b]" aria-hidden />
-            </div>
-            <h2 className="mt-4 text-base font-semibold text-neutral-950">
-              {title}
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-neutral-700">{text}</p>
+      <footer className="bg-neutral-950 px-4 py-6 text-neutral-400 sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 text-xs sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2 text-white">
+            <ListChecks className="size-4 text-[#f4c95d]" aria-hidden />
+            <span className="font-semibold">RoadmapOS</span>
           </div>
-        ))}
-      </section>
-
-      <section id="walkthrough" className="mx-auto max-w-6xl px-4 pb-16">
-        <div className="mb-6 max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#176b5b]">
-            Page-by-page walkthrough
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold text-neutral-950">
-            What to do on each page
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-neutral-600">
-            RoadmapOS is meant to be used in a simple order: setup once, add goals,
-            generate the roadmap, execute today, review weekly, and research only
-            when current facts matter.
-          </p>
+          <p>Constraint-aware planning for career, money, health, skills, and life.</p>
         </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          {pageWalkthrough.map(({ page, purpose, action, Icon }, index) => (
-            <div
-              key={page}
-              className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <span className="grid size-9 place-items-center rounded-lg bg-[#176b5b] text-sm font-semibold text-white">
-                    {index + 1}
-                  </span>
-                  <h3 className="text-base font-semibold text-neutral-950">{page}</h3>
-                </div>
-                <Icon className="size-5 shrink-0 text-[#176b5b]" aria-hidden />
-              </div>
-              <p className="mt-4 text-sm leading-6 text-neutral-700">{purpose}</p>
-              <p className="mt-3 rounded-lg border border-neutral-200 bg-[#fbfaf6] p-3 text-sm leading-6 text-neutral-700">
-                {action}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 pb-16">
-        <div className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm">
-          <div className="grid gap-4 md:grid-cols-[0.85fr_1.15fr] md:items-center">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#176b5b]">
-                Conflict detector
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold text-neutral-950">
-                The app tells you what your ambition costs.
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-neutral-600">
-                RoadmapOS compares monthly surplus, savings targets, weekly
-                hours, deadlines, and lifestyle purchases before it generates
-                the plan.
-              </p>
-            </div>
-            <div className="grid gap-3">
-              {[
-                "A new purchase may delay a savings milestone by 2 months.",
-                "Two high-effort goals are using most available weekday time.",
-                "This week should protect the highest-priority goal first.",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="flex items-start gap-3 rounded-lg border border-neutral-200 bg-[#fbfaf6] p-3 text-sm leading-6 text-neutral-700"
-                >
-                  <CheckCircle2 className="mt-1 size-4 shrink-0 text-[#176b5b]" aria-hidden />
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 pb-16">
-        <div className="rounded-lg border border-neutral-200 bg-white p-5 shadow-sm">
-          <div className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#176b5b]">
-                What it handles
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold text-neutral-950">
-                One place for roadmap, execution, reflection, and research.
-              </h2>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {functionality.map((item) => (
-                <div
-                  key={item}
-                  className="flex items-start gap-3 rounded-lg border border-neutral-200 bg-[#fbfaf6] p-3 text-sm leading-6 text-neutral-700"
-                >
-                  <CheckCircle2 className="mt-1 size-4 shrink-0 text-[#176b5b]" aria-hidden />
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      </footer>
     </div>
   );
 }

@@ -2,7 +2,12 @@ import { expect, test } from "@playwright/test";
 
 test("demo user can move through the RoadmapOS flow", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "RoadmapOS" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "RoadmapOS", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('img[src$=".gif"]')).toHaveCount(6);
+  await page.getByRole("tab", { name: "Research", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Bring current facts into the plan" })).toBeVisible();
   await page.getByRole("link", { name: /start with login/i }).click();
   await expect(page.getByRole("heading", { name: /continue to your roadmap/i })).toBeVisible();
   await page.getByLabel("Name").fill("Demo Planner");
