@@ -6,6 +6,9 @@ import { chromium } from "@playwright/test";
 const root = process.cwd();
 const frameRoot = path.resolve(root, ".gif-frames");
 const outputRoot = path.resolve(root, "public", "demos");
+const frameRate = 15;
+const loopDurationSeconds = 5;
+const frameCount = frameRate * loopDurationSeconds;
 
 function assertWorkspaceChild(target) {
   const workspacePrefix = `${path.resolve(root)}${path.sep}`.toLowerCase();
@@ -174,11 +177,22 @@ try {
     const sceneFrames = path.join(frameRoot, scene.name);
     await mkdir(sceneFrames, { recursive: true });
     await page.setContent(`<style>${commonStyles}</style>${scene.content}`);
+    await page.evaluate(() => {
+      for (const animation of document.getAnimations()) {
+        animation.pause();
+        animation.currentTime = 0;
+      }
+    });
 
-    for (let index = 0; index < 25; index += 1) {
+    for (let index = 0; index < frameCount; index += 1) {
+      const currentTime = (index / frameRate) * 1000;
+      await page.evaluate((time) => {
+        for (const animation of document.getAnimations()) {
+          animation.currentTime = time;
+        }
+      }, currentTime);
       const frameName = `${String(index).padStart(3, "0")}.png`;
       await page.screenshot({ path: path.join(sceneFrames, frameName) });
-      await page.waitForTimeout(200);
     }
 
     const output = path.join(outputRoot, `${scene.name}.gif`);
@@ -187,11 +201,11 @@ try {
       [
         "-y",
         "-framerate",
-        "5",
+        String(frameRate),
         "-i",
         path.join(sceneFrames, "%03d.png"),
         "-filter_complex",
-        "fps=5,split[a][b];[a]palettegen=max_colors=96[p];[b][p]paletteuse=dither=bayer:bayer_scale=3",
+        `fps=${frameRate},split[a][b];[a]palettegen=max_colors=128[p];[b][p]paletteuse=dither=bayer:bayer_scale=3`,
         "-loop",
         "0",
         output,
