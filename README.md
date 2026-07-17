@@ -20,8 +20,9 @@ cp .env.example .env.local
 npm run dev
 ```
 
-The public page routes users to `/login`, then signed-in users land in the
-dashboard. For real persistence, set `DATABASE_URL` from Neon.
+The public page routes users to `/login`. New users continue through the guided
+`/setup` flow; returning users land on the daily dashboard. For real
+persistence, set `DATABASE_URL` from Neon.
 
 ## Database
 
@@ -48,9 +49,9 @@ Neon, Gemini, and Vercel checklist.
 
 - `/` signed-out product entry
 - `/login` simple name/email sign-in
-- `/onboarding` profile and constraints
+- `/setup` guided profile and capacity setup
 - `/dashboard` daily essentials and conflicts
-- `/goals` goal builder and feasibility
+- `/goals` goal templates, feasibility warnings, and progress check-ins
 - `/roadmap` generated roadmap
 - `/review` weekly review and recovery
 - `/research` manual grounded research

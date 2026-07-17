@@ -58,10 +58,10 @@ export default function SettingsPage() {
           <h2 className="text-lg font-semibold text-neutral-950">Account</h2>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/onboarding"
+              href="/setup"
               className="inline-flex h-11 items-center justify-center rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-800 hover:bg-neutral-50"
             >
-              Edit profile
+              Edit setup
             </Link>
             <form action={signOutAction}>
               <button className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-800 hover:bg-neutral-50">

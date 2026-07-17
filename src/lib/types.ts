@@ -54,6 +54,9 @@ export type Goal = {
   priority: number;
   status: "active" | "paused" | "done";
   why: string;
+  progress: number;
+  progressNote: string;
+  lastCheckInAt?: string | null;
 };
 
 export type GoalAssessment = {

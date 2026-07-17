@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   goalSchema,
+  goalProgressSchema,
   onboardingSchema,
   researchRequestSchema,
   weeklyReviewSchema,
@@ -37,6 +38,13 @@ describe("schemas", () => {
 
     expect(parsed.domain).toBe("career");
     expect(parsed.weeklyHours).toBe(7);
+  });
+
+  it("bounds goal progress check-ins", () => {
+    expect(
+      goalProgressSchema.parse({ progress: "65", progressNote: "Milestone shipped" }),
+    ).toEqual({ progress: 65, progressNote: "Milestone shipped" });
+    expect(() => goalProgressSchema.parse({ progress: "101" })).toThrow();
   });
 
   it("normalizes empty research goal selection", () => {

@@ -31,6 +31,11 @@ export const goalSchema = z.object({
   why: z.string().trim().max(500).default(""),
 });
 
+export const goalProgressSchema = z.object({
+  progress: z.coerce.number().int().min(0).max(100),
+  progressNote: z.string().trim().max(500).default(""),
+});
+
 export const weeklyReviewSchema = z.object({
   completed: z.string().trim().min(2).max(1200),
   slipped: z.string().trim().max(1200).default(""),

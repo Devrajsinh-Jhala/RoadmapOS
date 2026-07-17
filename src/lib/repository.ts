@@ -13,7 +13,7 @@ import {
   weeklyReviews,
 } from "@/db/schema";
 import { analyzeConstraints } from "@/lib/constraints";
-import { DEMO_USER_ID } from "@/lib/current-user";
+import { DEMO_USER_ID, isDemoMode } from "@/lib/current-user";
 import { getDemoSnapshot, getDemoState } from "@/lib/demo-store";
 import { todayIso, weekStartIso } from "@/lib/format";
 import type {
@@ -30,8 +30,18 @@ import type {
 } from "@/lib/types";
 
 function shouldUseDb(userId: string) {
-  return Boolean(db && userId !== DEMO_USER_ID);
+  return Boolean(db && !isDemoMode() && userId !== DEMO_USER_ID);
 }
+
+type GoalDetailsInput = Omit<
+  Goal,
+  | "id"
+  | "userId"
+  | "status"
+  | "progress"
+  | "progressNote"
+  | "lastCheckInAt"
+>;
 
 function numberValue(value: string | number | null | undefined) {
   return Number(value ?? 0);
@@ -73,6 +83,9 @@ function goalFromRow(row: typeof goalsTable.$inferSelect): Goal {
     status:
       row.status === "paused" || row.status === "done" ? row.status : "active",
     why: row.why,
+    progress: row.progress,
+    progressNote: row.progressNote,
+    lastCheckInAt: row.lastCheckInAt?.toISOString() ?? null,
   };
 }
 
@@ -285,7 +298,7 @@ export async function saveProfile(
 
 export async function createGoal(
   userId: string,
-  input: Omit<Goal, "id" | "userId" | "status">,
+  input: GoalDetailsInput,
 ) {
   const id = nanoid();
   const goal: Goal = {
@@ -293,6 +306,9 @@ export async function createGoal(
     id,
     userId,
     status: "active",
+    progress: 0,
+    progressNote: "",
+    lastCheckInAt: null,
   };
 
   if (!shouldUseDb(userId) || !db) {
@@ -319,7 +335,7 @@ export async function createGoal(
 export async function updateGoal(
   userId: string,
   goalId: string,
-  input: Omit<Goal, "id" | "userId" | "status">,
+  input: GoalDetailsInput,
 ) {
   if (!goalId) {
     return;
@@ -345,6 +361,38 @@ export async function updateGoal(
       priority: input.priority,
       why: input.why,
       updatedAt: new Date(),
+    })
+    .where(and(eq(goalsTable.userId, userId), eq(goalsTable.id, goalId)));
+}
+
+export async function updateGoalProgress(
+  userId: string,
+  goalId: string,
+  input: { progress: number; progressNote: string },
+) {
+  if (!goalId) {
+    return;
+  }
+
+  const checkedInAt = new Date();
+
+  if (!shouldUseDb(userId) || !db) {
+    const goal = getDemoState().goals.find((item) => item.id === goalId);
+    if (goal) {
+      goal.progress = input.progress;
+      goal.progressNote = input.progressNote;
+      goal.lastCheckInAt = checkedInAt.toISOString();
+    }
+    return;
+  }
+
+  await db
+    .update(goalsTable)
+    .set({
+      progress: input.progress,
+      progressNote: input.progressNote,
+      lastCheckInAt: checkedInAt,
+      updatedAt: checkedInAt,
     })
     .where(and(eq(goalsTable.userId, userId), eq(goalsTable.id, goalId)));
 }

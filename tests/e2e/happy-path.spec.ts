@@ -8,8 +8,10 @@ test("demo user can move through the RoadmapOS flow", async ({ page }) => {
   await expect(page.locator('img[src$=".gif"]')).toHaveCount(6);
   await page.getByRole("tab", { name: "Research", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Bring current facts into the plan" })).toBeVisible();
-  await page.getByRole("link", { name: /start with login/i }).click();
-  await expect(page.getByRole("heading", { name: /continue to your roadmap/i })).toBeVisible();
+  await page.getByRole("link", { name: /start my life setup/i }).click();
+  await expect(
+    page.getByRole("heading", { name: /start or continue your life plan/i }),
+  ).toBeVisible();
   await page.getByLabel("Name").fill("Demo Planner");
   await page.getByLabel("Email").fill("demo@example.com");
   await page.getByRole("button", { name: /^sign in$/i }).click();
@@ -17,21 +19,32 @@ test("demo user can move through the RoadmapOS flow", async ({ page }) => {
     page.getByRole("heading", { name: /your life plan, reduced to today/i }),
   ).toBeVisible();
 
-  await page.goto("/goals");
+  await page.goto("/setup");
+  await expect(
+    page.getByRole("heading", { name: /keep the plan aligned with your real life/i }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: /save setup and continue to goals/i }).click();
+  await page.waitForURL(/goals/);
+
   const addGoal = page
     .locator("details")
-    .filter({ hasText: "Add one goal to the plan" })
+    .filter({ hasText: "Add a goal" })
     .first();
-  await addGoal.locator("summary").click();
+  await addGoal.locator(":scope > summary").click();
   const addGoalForm = addGoal.locator("form");
-  await addGoalForm.getByLabel("Goal title").fill("Side income validation");
-  await addGoalForm.getByLabel("Domain").selectOption("side-income");
-  await addGoalForm.getByLabel("Deadline").fill("2027-06-30");
-  await addGoalForm.getByLabel("Target amount (INR, optional)").fill("0");
-  await addGoalForm.getByLabel("Weekly time needed (hours)").fill("4");
+  await addGoalForm.getByRole("button", { name: "Side income" }).click();
+  await addGoalForm
+    .getByLabel("What outcome do you want?")
+    .fill("Side income validation");
+  await addGoalForm.getByLabel("Life area").selectOption("side-income");
+  await addGoalForm.getByLabel("Meaningful deadline").fill("2027-06-30");
+  await addGoalForm.getByLabel("Target amount (INR)").fill("0");
+  await addGoalForm.getByLabel("Focused hours per week").fill("4");
   await addGoalForm.getByLabel("Priority").selectOption("2");
-  await addGoalForm.getByLabel("Why it matters").fill("Create optionality.");
-  await addGoalForm.getByRole("button", { name: /add goal/i }).click();
+  await addGoalForm.getByRole("button", { name: /add goal and check fit/i }).click();
   await expect(page.getByText("Side income validation")).toBeVisible();
 
   await page.goto("/roadmap");

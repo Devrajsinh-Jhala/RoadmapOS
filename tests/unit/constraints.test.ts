@@ -34,6 +34,9 @@ function goal(input: Partial<Goal>): Goal {
     priority: input.priority ?? 2,
     status: "active",
     why: input.why ?? "",
+    progress: input.progress ?? 0,
+    progressNote: input.progressNote ?? "",
+    lastCheckInAt: input.lastCheckInAt ?? null,
   };
 }
 

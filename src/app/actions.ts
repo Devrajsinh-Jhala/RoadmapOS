@@ -21,9 +21,11 @@ import {
   saveProfile,
   toggleTask,
   updateGoal,
+  updateGoalProgress,
 } from "@/lib/repository";
 import {
   goalSchema,
+  goalProgressSchema,
   onboardingSchema,
   researchRequestSchema,
   weeklyReviewSchema,
@@ -48,6 +50,8 @@ export async function saveOnboardingAction(formData: FormData) {
   const parsed = onboardingSchema.parse(formObject(formData));
   await saveProfile(userId, parsed);
   revalidatePath("/dashboard");
+  revalidatePath("/setup");
+  revalidatePath("/goals");
   redirect("/goals");
 }
 
@@ -69,6 +73,16 @@ export async function updateGoalAction(formData: FormData) {
   revalidatePath("/roadmap");
 }
 
+export async function updateGoalProgressAction(formData: FormData) {
+  const userId = await getCurrentUserId();
+  const goalId = String(formData.get("goalId") ?? "");
+  const parsed = goalProgressSchema.parse(formObject(formData));
+  await updateGoalProgress(userId, goalId, parsed);
+  revalidatePath("/dashboard");
+  revalidatePath("/goals");
+  revalidatePath("/roadmap");
+}
+
 export async function archiveGoalAction(formData: FormData) {
   const userId = await getCurrentUserId();
   const goalId = String(formData.get("goalId") ?? "");
@@ -83,7 +97,7 @@ export async function generateRoadmapAction() {
   const snapshot = await getSnapshot(userId);
 
   if (!snapshot.profile) {
-    redirect("/onboarding");
+    redirect("/setup");
   }
 
   if (snapshot.goals.length === 0) {
@@ -135,7 +149,7 @@ export async function submitWeeklyReviewAction(formData: FormData) {
   const snapshot = await getSnapshot(userId);
 
   if (!snapshot.profile) {
-    redirect("/onboarding");
+    redirect("/setup");
   }
 
   const parsed = weeklyReviewSchema.parse(formObject(formData));
@@ -185,7 +199,7 @@ export async function runResearchAction(formData: FormData) {
   const snapshot = await getSnapshot(userId);
 
   if (!snapshot.profile) {
-    redirect("/onboarding");
+    redirect("/setup");
   }
 
   const parsed = researchRequestSchema.parse(formObject(formData));

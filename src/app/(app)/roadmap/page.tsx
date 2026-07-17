@@ -5,7 +5,9 @@ import {
   RefreshCw,
   Route,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 import { generateRoadmapAction } from "@/app/actions";
+import { FirstRunPath } from "@/components/first-run-path";
 import { ConstraintIssues, PlanHealth } from "@/components/plan-health";
 import { SubmitButton } from "@/components/submit-button";
 import {
@@ -25,6 +27,19 @@ export default async function RoadmapPage() {
   const roadmap = snapshot.latestRoadmap;
   const constraints = snapshot.constraints;
 
+  if (!snapshot.profile) {
+    redirect("/setup");
+  }
+
+  if (snapshot.goals.length === 0 && constraints) {
+    return (
+      <div className="grid gap-6">
+        <PageHeader eyebrow="Roadmap" title="Your roadmap unlocks after Goals." />
+        <FirstRunPath report={constraints} />
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-6">
       <PageHeader eyebrow="Roadmap" title="A roadmap that respects your real life.">
@@ -37,6 +52,7 @@ export default async function RoadmapPage() {
       </PageHeader>
 
       <PageGuide
+        defaultOpen={!roadmap}
         title="Read this page from top to bottom."
         text="The deterministic checks come before the generated roadmap. Resolve critical warnings before treating any deadline as reliable."
         steps={[
@@ -85,6 +101,9 @@ export default async function RoadmapPage() {
                       <p className="mt-1 text-xs leading-5 text-neutral-600">
                         {assessment.recommendedAction}
                       </p>
+                      <p className="mt-1 text-xs font-semibold text-[#176b5b]">
+                        {snapshot.goals.find((goal) => goal.id === assessment.goalId)?.progress ?? 0}% complete
+                      </p>
                     </div>
                   </div>
                 ))
@@ -99,7 +118,7 @@ export default async function RoadmapPage() {
       {!roadmap ? (
         <EmptyState
           title="No roadmap yet"
-          text="Complete onboarding, add goals, then click Regenerate roadmap to create the first execution plan."
+          text="Complete Setup, add goals, then generate the first execution roadmap."
         />
       ) : (
         <>

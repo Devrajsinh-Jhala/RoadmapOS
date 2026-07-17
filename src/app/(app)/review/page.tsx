@@ -1,6 +1,8 @@
-import { ArrowRight, ClipboardCheck, Save } from "lucide-react";
+import { ArrowRight, ClipboardCheck, Compass, Save } from "lucide-react";
 import Link from "next/link";
-import { submitWeeklyReviewAction } from "@/app/actions";
+import { redirect } from "next/navigation";
+import { generateRoadmapAction, submitWeeklyReviewAction } from "@/app/actions";
+import { FirstRunPath } from "@/components/first-run-path";
 import { SubmitButton } from "@/components/submit-button";
 import {
   Field,
@@ -19,11 +21,48 @@ export default async function ReviewPage() {
   const snapshot = await getSnapshot(userId);
   const latest = snapshot.weeklyReviews[0];
 
+  if (!snapshot.profile) {
+    redirect("/setup");
+  }
+
+  if (snapshot.goals.length === 0 && snapshot.constraints) {
+    return (
+      <div className="grid gap-6">
+        <PageHeader eyebrow="Review" title="Weekly reviews begin after Goals." />
+        <FirstRunPath report={snapshot.constraints} />
+      </div>
+    );
+  }
+
+  if (!snapshot.latestRoadmap) {
+    return (
+      <div className="grid gap-6">
+        <PageHeader eyebrow="Review" title="Generate the first roadmap before reviewing it." />
+        <Panel>
+          <Compass className="size-6 text-[#176b5b]" aria-hidden />
+          <h2 className="mt-4 text-xl font-semibold text-neutral-950">
+            Your goals are ready for sequencing.
+          </h2>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-neutral-600">
+            Generate the roadmap once. After you execute it for a week, Review will adapt the next plan from what actually happened.
+          </p>
+          <form action={generateRoadmapAction} className="mt-5">
+            <SubmitButton>
+              <Compass className="size-4" aria-hidden />
+              Generate my roadmap
+            </SubmitButton>
+          </form>
+        </Panel>
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-6">
       <PageHeader eyebrow="Weekly Review" title="Update the plan once a week." />
 
       <PageGuide
+        defaultOpen={!latest}
         title="Use this every Sunday or after a bad week."
         text="The review is not a report card. It tells the planner what actually happened so next week becomes realistic."
         steps={[

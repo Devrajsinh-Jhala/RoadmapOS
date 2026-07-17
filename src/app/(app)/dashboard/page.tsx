@@ -17,6 +17,7 @@ import {
   ProgressBar,
 } from "@/components/ui";
 import { ConstraintIssues, PlanHealth } from "@/components/plan-health";
+import { FirstRunPath } from "@/components/first-run-path";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getSnapshot } from "@/lib/repository";
 
@@ -37,11 +38,11 @@ export default async function DashboardPage() {
             them into goals, daily essentials, and weekly recovery.
           </p>
           <Link
-            href="/onboarding"
+            href="/setup"
             className="mt-5 inline-flex h-11 items-center gap-2 rounded-lg bg-[#176b5b] px-4 text-sm font-semibold text-white"
           >
             <Plus className="size-4" aria-hidden />
-            Start onboarding
+            Start setup
           </Link>
         </Panel>
       </div>
@@ -49,6 +50,16 @@ export default async function DashboardPage() {
   }
 
   const constraints = snapshot.constraints;
+
+  if (snapshot.goals.length === 0 && constraints) {
+    return (
+      <div className="grid gap-6">
+        <PageHeader eyebrow="Welcome" title="Your planning baseline is ready." />
+        <FirstRunPath report={constraints} />
+      </div>
+    );
+  }
+
   const completed = snapshot.todayTasks.filter((task) => task.completedAt).length;
   const total = snapshot.todayTasks.length || 1;
   const needsSetupHelp = snapshot.goals.length === 0 || !snapshot.latestRoadmap;
@@ -59,13 +70,14 @@ export default async function DashboardPage() {
         <form action={generateRoadmapAction}>
           <button className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-800 hover:bg-neutral-50">
             <RefreshCw className="size-4" aria-hidden />
-            Rebuild plan
+            {snapshot.latestRoadmap ? "Rebuild plan" : "Generate first roadmap"}
           </button>
         </form>
       </PageHeader>
 
       {needsSetupHelp ? (
         <PageGuide
+          defaultOpen
           title="Your first setup path"
           text="If this page feels empty, nothing is broken. RoadmapOS needs your goals and one generated roadmap before it can create daily essentials."
           steps={[

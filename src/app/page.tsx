@@ -130,7 +130,7 @@ export default function Home() {
                 href="/login"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#176b5b] px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#125348]"
               >
-                Start with login
+                Start my life setup
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
               <Link
@@ -140,7 +140,7 @@ export default function Home() {
                 Watch product demos
               </Link>
             </div>
-            <p className="mt-4 text-xs text-neutral-500">Sign in with name and email. No password setup in this MVP.</p>
+            <p className="mt-4 text-xs text-neutral-500">Setup takes about four minutes. Your first roadmap follows after Goals.</p>
           </div>
         </section>
 

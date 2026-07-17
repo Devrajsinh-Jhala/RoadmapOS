@@ -7,22 +7,24 @@ import {
   Home,
   Settings,
   Target,
+  UserRound,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "/dashboard", label: "Plan today", icon: Home },
-  { href: "/goals", label: "Life goals", icon: Target },
+  { href: "/setup", label: "Setup", icon: UserRound },
+  { href: "/goals", label: "Goals", icon: Target },
   { href: "/roadmap", label: "Roadmap", icon: Compass },
-  { href: "/review", label: "Weekly reset", icon: ClipboardCheck },
+  { href: "/dashboard", label: "Today", icon: Home },
+  { href: "/review", label: "Review", icon: ClipboardCheck },
   { href: "/research", label: "Research", icon: FlaskConical },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function AppNav({ mobile = false }: { mobile?: boolean }) {
   const pathname = usePathname();
-  const items = mobile ? navItems.slice(0, 5) : navItems;
+  const items = mobile ? navItems.slice(0, 6) : navItems;
 
   return (
     <nav className={mobile ? "flex gap-2 overflow-x-auto pb-1" : "grid gap-1"}>

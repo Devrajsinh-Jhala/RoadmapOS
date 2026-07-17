@@ -44,6 +44,9 @@ describe("AI utilities", () => {
         priority: 1,
         status: "active",
         why: "",
+        progress: 0,
+        progressNote: "",
+        lastCheckInAt: null,
       },
     ];
 
@@ -94,6 +97,9 @@ describe("AI utilities", () => {
         priority: 1,
         status: "active",
         why: "",
+        progress: 0,
+        progressNote: "",
+        lastCheckInAt: null,
       },
       {
         id: "fitness",
@@ -107,6 +113,9 @@ describe("AI utilities", () => {
         priority: 2,
         status: "active",
         why: "",
+        progress: 0,
+        progressNote: "",
+        lastCheckInAt: null,
       },
     ];
     const report = analyzeConstraints(

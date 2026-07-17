@@ -4,6 +4,7 @@ import {
   useId,
   type ReactNode,
 } from "react";
+import { ChevronDown, CircleHelp } from "lucide-react";
 import type { Feasibility } from "@/lib/types";
 
 export function PageHeader({
@@ -96,29 +97,48 @@ export function PageGuide({
   title,
   text,
   steps,
+  defaultOpen = false,
 }: {
   title: string;
   text: string;
   steps: string[];
+  defaultOpen?: boolean;
 }) {
   return (
-    <aside className="rounded-lg border border-emerald-200 bg-emerald-50/70 p-4">
-      <p className="text-xs font-semibold uppercase text-emerald-800">
-        Simple path
-      </p>
-      <h2 className="mt-2 text-lg font-semibold text-neutral-950">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-neutral-700">{text}</p>
-      <ol className="mt-4 grid gap-2">
-        {steps.map((step, index) => (
-          <li key={step} className="flex gap-3 text-sm leading-6 text-neutral-700">
-            <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-white text-xs font-semibold text-[#176b5b] ring-1 ring-emerald-200">
-              {index + 1}
+    <details
+      open={defaultOpen}
+      className="group rounded-lg border border-emerald-200 bg-emerald-50/70"
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4">
+        <span className="flex min-w-0 items-center gap-3">
+          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-emerald-800 ring-1 ring-emerald-200">
+            <CircleHelp className="size-4" aria-hidden />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-xs font-semibold uppercase text-emerald-800">
+              Quick guide
             </span>
-            <span>{step}</span>
-          </li>
-        ))}
-      </ol>
-    </aside>
+            <span className="mt-0.5 block text-sm font-semibold text-neutral-950">
+              {title}
+            </span>
+          </span>
+        </span>
+        <ChevronDown className="size-4 shrink-0 text-emerald-800 transition group-open:rotate-180" aria-hidden />
+      </summary>
+      <div className="border-t border-emerald-200 px-4 pb-4 pt-3">
+        <p className="text-sm leading-6 text-neutral-700">{text}</p>
+        <ol className="mt-4 grid gap-3 md:grid-cols-2">
+          {steps.map((step, index) => (
+            <li key={step} className="flex gap-3 text-sm leading-6 text-neutral-700">
+              <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-white text-xs font-semibold text-[#176b5b] ring-1 ring-emerald-200">
+                {index + 1}
+              </span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </details>
   );
 }
 

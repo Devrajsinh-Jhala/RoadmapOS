@@ -53,6 +53,9 @@ function createInitialState(): DemoState {
       priority: 1,
       status: "active",
       why: "Family security and long-term stability.",
+      progress: 24,
+      progressNote: "Emergency reserve protected; corpus contributions are active.",
+      lastCheckInAt: new Date().toISOString(),
     },
     {
       id: "goal-career",
@@ -66,6 +69,9 @@ function createInitialState(): DemoState {
       priority: 1,
       status: "active",
       why: "Better role, confidence, and income options.",
+      progress: 38,
+      progressNote: "Core interview topics are in progress.",
+      lastCheckInAt: new Date().toISOString(),
     },
     {
       id: "goal-ai",
@@ -79,6 +85,9 @@ function createInitialState(): DemoState {
       priority: 2,
       status: "active",
       why: "Turn technical curiosity into leverage.",
+      progress: 20,
+      progressNote: "The first portfolio project has started.",
+      lastCheckInAt: new Date().toISOString(),
     },
     {
       id: "goal-gym",
@@ -92,6 +101,9 @@ function createInitialState(): DemoState {
       priority: 2,
       status: "active",
       why: "Energy, confidence, and self-respect.",
+      progress: 45,
+      progressNote: "Three weekly sessions are becoming consistent.",
+      lastCheckInAt: new Date().toISOString(),
     },
     {
       id: "goal-watch",
@@ -105,6 +117,9 @@ function createInitialState(): DemoState {
       priority: 5,
       status: "active",
       why: "A useful reward, not a priority goal.",
+      progress: 10,
+      progressNote: "Waiting for the next wealth milestone.",
+      lastCheckInAt: new Date().toISOString(),
     },
   ];
 

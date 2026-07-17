@@ -1,5 +1,7 @@
 import { ExternalLink, FlaskConical, Search, Wand2 } from "lucide-react";
+import { redirect } from "next/navigation";
 import { applyResearchAction, runResearchAction } from "@/app/actions";
+import { FirstRunPath } from "@/components/first-run-path";
 import { SubmitButton } from "@/components/submit-button";
 import {
   Field,
@@ -16,11 +18,25 @@ export default async function ResearchPage() {
   const userId = await getCurrentUserId();
   const snapshot = await getSnapshot(userId);
 
+  if (!snapshot.profile) {
+    redirect("/setup");
+  }
+
+  if (snapshot.goals.length === 0 && snapshot.constraints) {
+    return (
+      <div className="grid gap-6">
+        <PageHeader eyebrow="Research" title="Research becomes useful after Goals." />
+        <FirstRunPath report={snapshot.constraints} />
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-6">
       <PageHeader eyebrow="Research" title="Use live research only when the plan needs current facts." />
 
       <PageGuide
+        defaultOpen={snapshot.researchRuns.length === 0}
         title="Research is optional, not a daily habit."
         text="Use this page for things that change over time: courses, salary ranges, product prices, locations, markets, or side-income ideas."
         steps={[
@@ -69,7 +85,7 @@ export default async function ResearchPage() {
               <Panel key={run.id}>
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">
+                    <p className="text-xs font-semibold uppercase text-neutral-500">
                       {run.grounded ? "Grounded research" : "Planning note"}
                     </p>
                     <h2 className="mt-2 text-lg font-semibold text-neutral-950">

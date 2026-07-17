@@ -65,6 +65,9 @@ export const goals = pgTable("goal", {
   priority: integer("priority").notNull().default(3),
   status: text("status").notNull().default("active"),
   why: text("why").notNull().default(""),
+  progress: integer("progress").notNull().default(0),
+  progressNote: text("progress_note").notNull().default(""),
+  lastCheckInAt: timestamp("last_check_in_at", { mode: "date" }),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
 });

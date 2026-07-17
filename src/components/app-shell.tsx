@@ -39,10 +39,10 @@ export function AppShell({
             Planning loop
           </p>
           <ol className="mt-3 grid gap-2 text-xs leading-5 text-neutral-700">
-            <li>1. Define money and time limits</li>
-            <li>2. Add and sequence life goals</li>
-            <li>3. Execute today&apos;s minimums</li>
-            <li>4. Reset the plan every week</li>
+            <li>1. Setup your real capacity</li>
+            <li>2. Add and sequence goals</li>
+            <li>3. Generate the roadmap</li>
+            <li>4. Execute Today and Review weekly</li>
           </ol>
         </div>
 

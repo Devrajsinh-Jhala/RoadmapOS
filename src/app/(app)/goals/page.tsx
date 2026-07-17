@@ -2,19 +2,21 @@ import {
   Archive,
   CalendarDays,
   Pencil,
-  Plus,
   RefreshCw,
   Save,
   Target,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 import {
   archiveGoalAction,
-  createGoalAction,
   generateRoadmapAction,
   updateGoalAction,
+  updateGoalProgressAction,
 } from "@/app/actions";
 import { SubmitButton } from "@/components/submit-button";
 import { PlanHealth } from "@/components/plan-health";
+import { CapacityReady } from "@/components/first-run-path";
+import { GoalCreator } from "@/components/goal-creator";
 import {
   EmptyState,
   FeasibilityBadge,
@@ -23,9 +25,10 @@ import {
   PageGuide,
   PageHeader,
   Panel,
+  ProgressBar,
   textareaClass,
 } from "@/components/ui";
-import { formatDate, formatInr } from "@/lib/format";
+import { formatDate, formatInr, todayIso } from "@/lib/format";
 import { getCurrentUserId } from "@/lib/current-user";
 import { getSnapshot } from "@/lib/repository";
 import { goalDomains } from "@/lib/types";
@@ -33,6 +36,11 @@ import { goalDomains } from "@/lib/types";
 export default async function GoalsPage() {
   const userId = await getCurrentUserId();
   const snapshot = await getSnapshot(userId);
+
+  if (!snapshot.profile) {
+    redirect("/setup");
+  }
+
   const assessments = snapshot.constraints?.goalAssessments ?? [];
   const orderedGoals = [...snapshot.goals].sort((a, b) => {
     const aRank = assessments.find((item) => item.goalId === a.id)?.sequenceRank ?? 99;
@@ -43,15 +51,18 @@ export default async function GoalsPage() {
   return (
     <div className="grid gap-6">
       <PageHeader eyebrow="Goals" title="Build a plan with honest trade-offs.">
-        <form action={generateRoadmapAction}>
-          <button className="inline-flex h-11 items-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-800 hover:bg-neutral-50">
-            <RefreshCw className="size-4" aria-hidden />
-            Generate roadmap
-          </button>
-        </form>
+        {snapshot.goals.length > 0 ? (
+          <form action={generateRoadmapAction}>
+            <button className="inline-flex h-11 items-center gap-2 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-800 hover:bg-neutral-50">
+              <RefreshCw className="size-4" aria-hidden />
+              Generate roadmap
+            </button>
+          </form>
+        ) : null}
       </PageHeader>
 
       <PageGuide
+        defaultOpen={snapshot.goals.length === 0}
         title="Start with 2 to 4 goals, not your entire life."
         text="RoadmapOS protects a money buffer and recovery time before it tests your goals. A warning is a decision to make, not a failure."
         steps={[
@@ -62,102 +73,15 @@ export default async function GoalsPage() {
         ]}
       />
 
-      {snapshot.constraints ? <PlanHealth report={snapshot.constraints} /> : null}
+      {snapshot.constraints ? (
+        snapshot.goals.length > 0 ? (
+          <PlanHealth report={snapshot.constraints} />
+        ) : (
+          <CapacityReady report={snapshot.constraints} />
+        )
+      ) : null}
 
-      <Panel>
-        <details open={orderedGoals.length === 0}>
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
-            <span>
-              <span className="block text-lg font-semibold text-neutral-950">Add one goal to the plan</span>
-              <span className="mt-1 block text-sm leading-6 text-neutral-600">
-                Add another goal, then RoadmapOS will recalculate the full plan.
-              </span>
-            </span>
-            <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#176b5b] text-white">
-              <Plus className="size-5" aria-hidden />
-            </span>
-          </summary>
-
-          <form action={createGoalAction} className="mt-5 grid gap-5 border-t border-neutral-200 pt-5">
-          <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-            <Field label="Goal title" hint="Use normal words. Example: Switch to a better engineering role.">
-              <input
-                className={inputClass}
-                name="title"
-                required
-                placeholder="Build a stronger career path"
-              />
-            </Field>
-
-            <Field label="Domain" hint="Choose the life area this goal belongs to.">
-              <select className={inputClass} name="domain" defaultValue="career">
-                {goalDomains.map((domain) => (
-                  <option key={domain} value={domain}>
-                    {domain.replace("-", " ")}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <Field label="Deadline" hint="The date you want this meaningfully done.">
-              <input className={inputClass} name="deadline" type="date" required />
-            </Field>
-            <Field label="Target amount (INR, optional)" hint="Use 0 if this goal is mostly about time or habit.">
-              <input
-                className={inputClass}
-                name="targetAmount"
-                type="number"
-                min="0"
-                defaultValue="0"
-              />
-            </Field>
-            <Field label="Weekly time needed (hours)" hint="Estimate focused hours per week. Example: 4.">
-              <input
-                className={inputClass}
-                name="weeklyHours"
-                type="number"
-                min="0"
-                max="80"
-                defaultValue="3"
-              />
-            </Field>
-            <Field label="Priority" hint="1 is core. 5 is a reward or nice-to-have.">
-              <select className={inputClass} name="priority" defaultValue="3">
-                <option value="1">1 - core</option>
-                <option value="2">2 - high</option>
-                <option value="3">3 - normal</option>
-                <option value="4">4 - later</option>
-                <option value="5">5 - reward</option>
-              </select>
-            </Field>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Field label="Why it matters" hint="One sentence is enough. This helps the roadmap keep the goal meaningful.">
-              <textarea
-                className={textareaClass}
-                name="why"
-                placeholder="Example: Increase income and create more career options."
-              />
-            </Field>
-            <Field label="Notes" hint="Add context, constraints, dependencies, or success criteria. Optional.">
-              <textarea
-                className={textareaClass}
-                name="description"
-                placeholder="Example: Needs DSA practice, two portfolio projects, and interview prep."
-              />
-            </Field>
-          </div>
-
-            <SubmitButton className="w-full sm:w-fit">
-              <Plus className="size-4" aria-hidden />
-              Add goal
-            </SubmitButton>
-          </form>
-        </details>
-      </Panel>
+      <GoalCreator today={todayIso()} hasGoals={orderedGoals.length > 0} />
 
       {orderedGoals.length > 0 ? (
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -246,6 +170,61 @@ export default async function GoalsPage() {
                     {assessment?.monthsRemaining ?? "-"} months
                   </p>
                 </div>
+              </div>
+
+              <div className="mt-4">
+                <div className="flex items-end justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-neutral-500">Outcome progress</p>
+                    <p className="mt-1 text-sm font-semibold text-neutral-950">
+                      {goal.progress === 100 ? "Outcome reached" : `${goal.progress}% complete`}
+                    </p>
+                  </div>
+                  {goal.lastCheckInAt ? (
+                    <p className="text-xs text-neutral-500">
+                      Checked {formatDate(goal.lastCheckInAt.slice(0, 10))}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="mt-3">
+                  <ProgressBar value={goal.progress / 100} tone={goal.progress === 100 ? "teal" : "blue"} />
+                </div>
+                {goal.progressNote ? (
+                  <p className="mt-2 text-xs leading-5 text-neutral-600">{goal.progressNote}</p>
+                ) : null}
+
+                <details className="group mt-3">
+                  <summary className="w-fit cursor-pointer list-none text-sm font-semibold text-[#176b5b]">
+                    Update progress
+                  </summary>
+                  <form action={updateGoalProgressAction} className="mt-4 grid gap-4 border-l-2 border-emerald-200 pl-4 sm:grid-cols-[160px_1fr_auto] sm:items-end">
+                    <input type="hidden" name="goalId" value={goal.id} />
+                    <Field label="Completion (%)" hint="Estimate against the outcome, not effort spent.">
+                      <input
+                        className={inputClass}
+                        name="progress"
+                        type="number"
+                        min="0"
+                        max="100"
+                        required
+                        defaultValue={goal.progress}
+                      />
+                    </Field>
+                    <Field label="Latest proof or blocker" hint="One concrete sentence keeps the next review honest.">
+                      <input
+                        className={inputClass}
+                        name="progressNote"
+                        maxLength={500}
+                        defaultValue={goal.progressNote}
+                        placeholder="Completed the first milestone; waiting on feedback."
+                      />
+                    </Field>
+                    <SubmitButton>
+                      <Save className="size-4" aria-hidden />
+                      Check in
+                    </SubmitButton>
+                  </form>
+                </details>
               </div>
 
               {assessment ? (

@@ -7,7 +7,7 @@ import {
   USER_NAME_COOKIE,
   isDemoMode,
 } from "@/lib/current-user";
-import { createOrFindUser } from "@/lib/repository";
+import { createOrFindUser, getSnapshot } from "@/lib/repository";
 import { simpleSignInSchema } from "@/lib/schemas";
 
 const cookieOptions = {
@@ -33,7 +33,8 @@ export async function simpleSignInAction(formData: FormData) {
   cookieStore.set(USER_ID_COOKIE, user.id, cookieOptions);
   cookieStore.set(USER_NAME_COOKIE, user.name ?? user.email, cookieOptions);
 
-  redirect("/dashboard");
+  const snapshot = await getSnapshot(user.id);
+  redirect(snapshot.profile ? "/dashboard" : "/setup");
 }
 
 export async function signOutAction() {
