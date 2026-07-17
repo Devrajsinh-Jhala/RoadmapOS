@@ -47,19 +47,19 @@ const workflow = [
 const capabilities = [
   {
     title: "Money-aware",
-    text: "Compares income, fixed expenses, savings, goal costs, and deadlines.",
+    text: "Protects an emergency reserve and monthly buffer before funding goals.",
     Icon: BadgeIndianRupee,
     tone: "bg-emerald-100 text-emerald-800",
   },
   {
     title: "Time-aware",
-    text: "Stops study, fitness, and side-income plans from overloading the same week.",
+    text: "Keeps recovery time outside the plan before scheduling study, fitness, and side income.",
     Icon: Timer,
     tone: "bg-blue-100 text-blue-800",
   },
   {
     title: "Conflict-aware",
-    text: "Shows what must move when every goal cannot happen at the same time.",
+    text: "Labels critical conflicts, risky trade-offs, and the exact decision needed to recover.",
     Icon: ShieldCheck,
     tone: "bg-amber-100 text-amber-900",
   },
@@ -123,7 +123,7 @@ export default function Home() {
               Put your big goals in the right order.
             </p>
             <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-neutral-600 sm:text-lg">
-              Turn career, money, health, skills, and life goals into a realistic daily and weekly plan that changes when your life does.
+              Turn career, money, health, skills, and life goals into a realistic sequence. See what fits, what conflicts, what must wait, and what to do today.
             </p>
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
@@ -200,18 +200,18 @@ export default function Home() {
             <div className="max-w-md">
               <p className="text-xs font-semibold text-[#f4c95d]">BEFORE AI MAKES THE PLAN</p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-                First, the numbers have to agree.
+                Protect the baseline before planning the ambition.
               </h2>
               <p className="mt-5 text-base leading-7 text-neutral-300">
-                The constraint engine checks monthly surplus, savings targets, goal costs, deadlines, and weekly hours before Gemini creates the roadmap.
+                RoadmapOS sets aside emergency savings, a monthly buffer, and recovery time. It then checks every cost, deadline, and weekly commitment before AI creates the roadmap.
               </p>
             </div>
             <div className="grid gap-px overflow-hidden rounded-lg border border-white/15 bg-white/15 sm:grid-cols-2">
               {[
-                ["Monthly surplus", "₹49,000", "Enough for two active money goals"],
-                ["Weekly capacity", "18 hours", "12 hours currently planned"],
+                ["Safe money limit", "INR 36,750", "INR 12,250 remains as monthly buffer"],
+                ["Safe daily time", "90 minutes", "30 free minutes remain outside the plan"],
                 ["Purchase impact", "+2 months", "A reward purchase delays the home deposit"],
-                ["Plan decision", "Protect P1", "Move one lower-priority goal to next quarter"],
+                ["Plan decision", "Sequence it", "Move the reward after the next home milestone"],
               ].map(([label, value, note], index) => (
                 <div key={label} className="bg-neutral-950 p-5 sm:p-6">
                   <div className="flex items-center justify-between gap-3">

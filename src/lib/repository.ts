@@ -316,6 +316,39 @@ export async function createGoal(
   return goal;
 }
 
+export async function updateGoal(
+  userId: string,
+  goalId: string,
+  input: Omit<Goal, "id" | "userId" | "status">,
+) {
+  if (!goalId) {
+    return;
+  }
+
+  if (!shouldUseDb(userId) || !db) {
+    const goal = getDemoState().goals.find((item) => item.id === goalId);
+    if (goal) {
+      Object.assign(goal, input);
+    }
+    return;
+  }
+
+  await db
+    .update(goalsTable)
+    .set({
+      title: input.title,
+      domain: input.domain,
+      description: input.description,
+      deadline: input.deadline,
+      targetAmount: String(input.targetAmount),
+      weeklyHours: String(input.weeklyHours),
+      priority: input.priority,
+      why: input.why,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(goalsTable.userId, userId), eq(goalsTable.id, goalId)));
+}
+
 export async function archiveGoal(userId: string, goalId: string) {
   if (!goalId) {
     return;
@@ -326,13 +359,21 @@ export async function archiveGoal(userId: string, goalId: string) {
     if (goal) {
       goal.status = "paused";
     }
+    getDemoState().tasks = getDemoState().tasks.filter(
+      (task) => task.goalId !== goalId,
+    );
     return;
   }
 
-  await db
-    .update(goalsTable)
-    .set({ status: "paused", updatedAt: new Date() })
-    .where(and(eq(goalsTable.userId, userId), eq(goalsTable.id, goalId)));
+  await Promise.all([
+    db
+      .update(goalsTable)
+      .set({ status: "paused", updatedAt: new Date() })
+      .where(and(eq(goalsTable.userId, userId), eq(goalsTable.id, goalId))),
+    db
+      .delete(dailyTasks)
+      .where(and(eq(dailyTasks.userId, userId), eq(dailyTasks.goalId, goalId))),
+  ]);
 }
 
 export async function createRoadmapRecord(

@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  applyRoadmapGuardrails,
   createFallbackResearchSummary,
   createFallbackRoadmap,
   parseJsonFromText,
 } from "@/lib/ai/roadmap";
 import { analyzeConstraints } from "@/lib/constraints";
-import type { Goal, UserProfile } from "@/lib/types";
+import type { Goal, RoadmapOutput, UserProfile } from "@/lib/types";
 
 describe("AI utilities", () => {
   it("extracts JSON from fenced model text", () => {
@@ -61,5 +62,82 @@ describe("AI utilities", () => {
     expect(summary).toContain("quota");
     expect(summary).toContain("Question: Find practical DSA");
     expect(summary).toContain("retry research later");
+  });
+
+  it("caps generated daily work and inserts a capacity reset", () => {
+    const profile: UserProfile = {
+      id: "profile",
+      userId: "user",
+      age: 26,
+      monthlyIncome: 90000,
+      fixedExpenses: 50000,
+      currentSavings: 100000,
+      familyResponsibilities: "Family support",
+      dailyAvailableMinutes: 120,
+      energyLevel: "Medium",
+      blockers: "Long workdays",
+      intensity: "balanced",
+      currency: "INR",
+      timezone: "Asia/Kolkata",
+      onboarded: true,
+    };
+    const goals: Goal[] = [
+      {
+        id: "career",
+        userId: "user",
+        title: "Career switch",
+        domain: "career",
+        description: "",
+        deadline: "2027-07-01",
+        targetAmount: 0,
+        weeklyHours: 14,
+        priority: 1,
+        status: "active",
+        why: "",
+      },
+      {
+        id: "fitness",
+        userId: "user",
+        title: "Fitness routine",
+        domain: "health",
+        description: "",
+        deadline: "2027-07-01",
+        targetAmount: 0,
+        weeklyHours: 7,
+        priority: 2,
+        status: "active",
+        why: "",
+      },
+    ];
+    const report = analyzeConstraints(
+      profile,
+      goals,
+      new Date("2026-07-17T00:00:00+05:30"),
+    );
+    const generated: RoadmapOutput = {
+      vision2Year: "A stable plan",
+      yearRoadmap: ["Build steadily"],
+      quarterlyMilestones: [],
+      monthlyTargets: [],
+      weeklyPlan: [{ week: "Week 1", focus: "Do everything", actions: ["Push"] }],
+      dailyNonNegotiables: [
+        { title: "Career", domain: "career", minutes: 60, goalTitle: "Career switch" },
+        { title: "Fitness", domain: "health", minutes: 60, goalTitle: "Fitness routine" },
+        { title: "More", domain: "discipline", minutes: 60 },
+      ],
+      conflicts: [],
+      recoveryPlan: ["Restart small"],
+    };
+
+    const guarded = applyRoadmapGuardrails(generated, report);
+    const totalMinutes = guarded.dailyNonNegotiables.reduce(
+      (total, task) => total + task.minutes,
+      0,
+    );
+
+    expect(report.feasibility).toBe("conflicting");
+    expect(totalMinutes).toBeLessThanOrEqual(Math.floor(report.safeDailyMinutes));
+    expect(guarded.weeklyPlan[0].week).toBe("Capacity reset");
+    expect(guarded.conflicts).toEqual(expect.arrayContaining(report.conflicts));
   });
 });

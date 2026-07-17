@@ -69,11 +69,66 @@ function quarterTargetDate(offset: number) {
   return date.toISOString().slice(0, 10);
 }
 
+export function applyRoadmapGuardrails(
+  roadmap: RoadmapOutput,
+  report: ConstraintReport,
+): RoadmapOutput {
+  const goalRanks = new Map(
+    report.goalAssessments.map((assessment) => [
+      assessment.title.toLowerCase(),
+      assessment.sequenceRank,
+    ]),
+  );
+  const rankedTasks = roadmap.dailyNonNegotiables
+    .map((task, index) => ({
+      task,
+      index,
+      rank: goalRanks.get(task.goalTitle?.toLowerCase() ?? "") ?? 99,
+    }))
+    .sort((a, b) => a.rank - b.rank || a.index - b.index);
+  let remainingMinutes = Math.max(0, Math.floor(report.safeDailyMinutes));
+  const dailyNonNegotiables: RoadmapOutput["dailyNonNegotiables"] = [];
+
+  for (const { task } of rankedTasks) {
+    if (remainingMinutes < 10) {
+      break;
+    }
+
+    const minutes = Math.min(
+      remainingMinutes,
+      Math.max(10, Math.min(60, Math.round(task.minutes))),
+    );
+    dailyNonNegotiables.push({ ...task, minutes });
+    remainingMinutes -= minutes;
+  }
+
+  const conflicts = [...new Set([...report.conflicts, ...roadmap.conflicts])];
+  const weeklyPlan =
+    report.feasibility === "conflicting"
+      ? [
+          {
+            week: "Capacity reset",
+            focus: "Make the plan feasible before adding intensity",
+            actions: report.nextActions,
+          },
+          ...roadmap.weeklyPlan.slice(0, 3),
+        ]
+      : roadmap.weeklyPlan;
+
+  return {
+    ...roadmap,
+    dailyNonNegotiables,
+    conflicts,
+    weeklyPlan,
+  };
+}
+
 export function createFallbackRoadmap(
   profile: UserProfile,
   goals: Goal[],
   report: ConstraintReport = analyzeConstraints(profile, goals),
   research: ResearchRun[] = [],
+  weeklyRecovery: string[] = [],
 ): RoadmapOutput {
   const prioritized = topGoals(goals);
   const dailyNonNegotiables = prioritized.slice(0, 5).map((goal) => ({
@@ -96,7 +151,7 @@ export function createFallbackRoadmap(
     .filter((run) => run.appliedAt)
     .map((run) => `Applied research: ${run.summary.slice(0, 140)}`);
 
-  return {
+  const roadmap: RoadmapOutput = {
     vision2Year:
       report.feasibility === "conflicting"
         ? "A calmer, sequenced life plan where money and time stop fighting each other."
@@ -121,23 +176,29 @@ export function createFallbackRoadmap(
     monthlyTargets: [0, 1, 2].map((offset) => ({
       month: monthLabel(offset),
       target:
-        report.monthlySurplus > 0
-          ? `Protect ${Math.round(Math.min(report.monthlySurplus, report.totalRequiredMonthly)).toLocaleString("en-IN")} INR toward priority goals`
+        report.safeMonthlyCapacity > 0
+          ? `Protect ${Math.round(Math.min(report.safeMonthlyCapacity, report.totalRequiredMonthly)).toLocaleString("en-IN")} INR toward priority goals`
           : "Reduce expenses before adding paid commitments",
       metric: `${Math.round(report.moneyUtilization * 100)}% money load, ${Math.round(report.timeUtilization * 100)}% time load`,
     })),
     weeklyPlan: [
       {
         week: "Week 1",
-        focus: "Make the plan executable",
-        actions: dailyNonNegotiables.slice(0, 4).map((task) => task.title),
+        focus:
+          weeklyRecovery.length > 0
+            ? "Recover with a smaller, realistic week"
+            : "Make the plan executable",
+        actions:
+          weeklyRecovery.length > 0
+            ? weeklyRecovery
+            : dailyNonNegotiables.slice(0, 4).map((task) => task.title),
       },
       {
         week: "Week 2",
         focus: "Remove the biggest conflict",
         actions:
-          report.conflicts.length > 0
-            ? report.conflicts.slice(0, 3)
+          report.nextActions.length > 0
+            ? report.nextActions.slice(0, 3)
             : ["Raise intensity only if sleep and work stay stable."],
       },
     ],
@@ -149,6 +210,8 @@ export function createFallbackRoadmap(
       "If two weeks slip, reduce the lowest-priority goal before touching the core goal.",
     ],
   };
+
+  return applyRoadmapGuardrails(roadmap, report);
 }
 
 export function parseJsonFromText(text: string) {
@@ -172,9 +235,16 @@ export async function generateRoadmap(
   profile: UserProfile,
   goals: Goal[],
   research: ResearchRun[] = [],
+  weeklyRecovery: string[] = [],
 ) {
   const report = analyzeConstraints(profile, goals);
-  const fallback = createFallbackRoadmap(profile, goals, report, research);
+  const fallback = createFallbackRoadmap(
+    profile,
+    goals,
+    report,
+    research,
+    weeklyRecovery,
+  );
   const client = getAiClient();
 
   if (!client) {
@@ -190,7 +260,14 @@ export async function generateRoadmap(
     "Create a practical RoadmapOS plan for an Indian tech professional.",
     "Return only JSON matching this shape: vision2Year, yearRoadmap[], quarterlyMilestones[{quarter,title,targetDate,goalTitle}], monthlyTargets[{month,target,metric}], weeklyPlan[{week,focus,actions[]}], dailyNonNegotiables[{title,domain,minutes,goalTitle}], conflicts[], recoveryPlan[].",
     "Tone: direct, human, non-shaming, constraint-aware.",
-    JSON.stringify({ profile, goals, constraintReport: report, appliedResearch: research }),
+    `Hard rules: total dailyNonNegotiables minutes must be at most ${Math.floor(report.safeDailyMinutes)}; never omit or soften deterministic conflicts; sequence lower-priority goals after higher-priority goals when capacity is exceeded.`,
+    JSON.stringify({
+      profile,
+      goals,
+      constraintReport: report,
+      appliedResearch: research,
+      weeklyRecovery,
+    }),
   ].join("\n\n");
 
   try {
@@ -211,7 +288,7 @@ export async function generateRoadmap(
     }
 
     return {
-      roadmap: validated.data,
+      roadmap: applyRoadmapGuardrails(validated.data, report),
       report,
       provider: "gemini",
       model: DEFAULT_MODEL,

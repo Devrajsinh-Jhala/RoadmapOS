@@ -1,4 +1,5 @@
-import { ClipboardCheck, Save } from "lucide-react";
+import { ArrowRight, ClipboardCheck, Save } from "lucide-react";
+import Link from "next/link";
 import { submitWeeklyReviewAction } from "@/app/actions";
 import { SubmitButton } from "@/components/submit-button";
 import {
@@ -29,7 +30,7 @@ export default async function ReviewPage() {
           "Write what got done, even if it was small.",
           "Write what slipped and the real reason.",
           "Add simple metrics for money, workouts, study, and discipline.",
-          "Save review to create a recovery plan for the next week.",
+          "Save review to rebuild the roadmap and next-week recovery plan.",
         ]}
       />
 
@@ -126,14 +127,18 @@ export default async function ReviewPage() {
               </p>
               <div className="mt-4 grid gap-3">
                 {latest.aiRecovery.map((item) => (
-                  <p
-                    key={item}
-                    className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm leading-6 text-blue-950"
-                  >
+                  <p key={item} className="border-l-2 border-blue-500 pl-3 text-sm leading-6 text-blue-950">
                     {item}
                   </p>
                 ))}
               </div>
+              <Link
+                href="/roadmap"
+                className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#176b5b]"
+              >
+                Open refreshed roadmap
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
             </div>
           ) : (
             <p className="mt-4 text-sm leading-6 text-neutral-600">

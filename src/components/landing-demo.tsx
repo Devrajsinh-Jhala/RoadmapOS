@@ -105,8 +105,8 @@ const tourItems = [
     label: "Setup",
     eyebrow: "01 / SETUP",
     title: "Start with your real capacity",
-    text: "Add income, savings, expenses, free time in minutes per day, energy, responsibilities, and blockers. Estimates are enough to begin.",
-    action: "You do this once, then update it only when life changes.",
+    text: "Add income, savings, expenses, free time in minutes per day, energy, responsibilities, and blockers. RoadmapOS keeps part of that capacity uncommitted.",
+    action: "Your emergency reserve, monthly buffer, and recovery time stay protected.",
     Icon: UserRound,
   },
   {
@@ -115,7 +115,7 @@ const tourItems = [
     eyebrow: "02 / GOALS",
     title: "Choose what matters most",
     text: "Add two to four goals with a deadline, priority, target amount when money is involved, and weekly hours when effort is involved.",
-    action: "RoadmapOS keeps lower-priority goals from stealing capacity.",
+    action: "Each goal gets a sequence rank, feasibility label, and recommended decision.",
     Icon: Target,
   },
   {
@@ -123,8 +123,8 @@ const tourItems = [
     label: "Roadmap",
     eyebrow: "03 / ROADMAP",
     title: "See the right sequence",
-    text: "Generate a two-year vision, one-year direction, quarterly milestones, monthly targets, and a practical weekly plan.",
-    action: "Read conflict warnings first, then protect the highest-priority goal.",
+    text: "Generate a two-year vision, one-year direction, quarterly milestones, monthly targets, weekly actions, and daily minimums.",
+    action: "Critical conflicts become a capacity reset before any generated timeline is trusted.",
     Icon: Compass,
   },
   {

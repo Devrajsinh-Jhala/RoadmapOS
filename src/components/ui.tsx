@@ -17,7 +17,7 @@ export function PageHeader({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#176b5b]">
+      <p className="text-xs font-semibold uppercase text-[#176b5b]">
         {eyebrow}
       </p>
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -103,7 +103,7 @@ export function PageGuide({
 }) {
   return (
     <aside className="rounded-lg border border-emerald-200 bg-emerald-50/70 p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">
+      <p className="text-xs font-semibold uppercase text-emerald-800">
         Simple path
       </p>
       <h2 className="mt-2 text-lg font-semibold text-neutral-950">{title}</h2>

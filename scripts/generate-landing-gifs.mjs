@@ -102,27 +102,28 @@ const scenes = [
           <div class="nav"><span>Today</span><span>Goals</span><span class="active">Roadmap</span><span>Review</span><span>Research</span></div>
         </aside>
         <main class="main">
-          <div class="top"><div><p class="eyebrow">CONFLICT CHECK</p><h1>Know what a decision changes.</h1></div><span class="tag amber-tag">1 trade-off</span></div>
-          <div class="panel" style="margin-top:22px;padding:17px;">
+          <div class="top"><div><p class="eyebrow">PLAN HEALTH</p><h1>See exactly why a plan does not fit.</h1></div><span class="tag red-tag">Conflicting</span></div>
+          <div style="margin-top:20px;border:1px solid #fecaca;border-radius:8px;background:#fff7f7;padding:14px 16px;animation:rise 5s ease-in-out .1s infinite;">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-              <div><p style="margin:0;font-size:10px;color:#6b7280;">PRIMARY GOAL</p><p style="margin:5px 0 0;font-size:13px;font-weight:700;">Home deposit</p></div>
-              <div style="text-align:right;"><p style="margin:0;font-size:10px;color:#6b7280;">ON TRACK FOR</p><p style="margin:5px 0 0;font-size:13px;font-weight:700;">June 2028</p></div>
+              <div><p style="margin:0;font-size:10px;font-weight:700;color:#991b1b;">READINESS SCORE</p><p style="margin:5px 0 0;font-size:12px;font-weight:700;color:#7f1d1d;">Money and time both exceed their protected limits.</p></div>
+              <p style="margin:0;font-size:24px;font-weight:700;color:#991b1b;">52</p>
             </div>
-            <div class="bar" style="height:8px;margin-top:14px;"><span style="width:72%;animation:fill 5s ease-in-out infinite;"></span></div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px;">
-            <div class="panel" style="padding:16px;animation:rise 5s ease-in-out .15s infinite;">
-              <p style="margin:0;font-size:10px;color:#6b7280;">NEW PURCHASE</p>
-              <p style="margin:8px 0 0;font-size:20px;font-weight:700;">₹85,000</p>
-              <p style="margin:5px 0 0;font-size:11px;color:#6b7280;">Lifestyle reward · this month</p>
+            <div class="panel" style="padding:16px;animation:rise 5s ease-in-out .35s infinite;">
+              <p style="margin:0;font-size:10px;color:#6b7280;">SAFE MONEY LIMIT</p>
+              <p style="margin:8px 0 0;font-size:18px;font-weight:700;">INR 72k / INR 60k</p>
+              <div class="bar" style="margin-top:10px;"><span style="width:100%;background:#dc2626;animation:fill 5s ease-in-out .4s infinite;"></span></div>
+              <p style="margin:7px 0 0;font-size:10px;color:#6b7280;">Monthly buffer stays untouched</p>
             </div>
-            <div style="border:1px solid #fecaca;border-radius:8px;background:#fff7f7;padding:16px;animation:pop 5s ease-in-out .7s infinite;">
-              <div style="display:flex;align-items:center;justify-content:space-between;"><p style="margin:0;font-size:10px;font-weight:700;color:#991b1b;">IMPACT</p><span class="tag red-tag">Stretched</span></div>
-              <p style="margin:10px 0 0;font-size:20px;font-weight:700;color:#991b1b;">+2 months</p>
-              <p style="margin:5px 0 0;font-size:11px;line-height:1.5;color:#7f1d1d;">Keep the home goal on time by moving this purchase to next quarter.</p>
+            <div class="panel" style="padding:16px;animation:rise 5s ease-in-out .65s infinite;">
+              <p style="margin:0;font-size:10px;color:#6b7280;">SAFE DAILY TIME</p>
+              <p style="margin:8px 0 0;font-size:18px;font-weight:700;">142 / 113 min</p>
+              <div class="bar" style="margin-top:10px;"><span style="width:100%;background:#dc2626;animation:fill 5s ease-in-out .7s infinite;"></span></div>
+              <p style="margin:7px 0 0;font-size:10px;color:#6b7280;">Recovery time stays outside the plan</p>
             </div>
           </div>
-          <div style="margin-top:13px;border-left:4px solid #f4c95d;background:#fff9e8;padding:11px 13px;font-size:11px;color:#4b5563;animation:slide 5s ease-in-out 1.1s infinite;">Recommendation: protect priority 1 and delay the optional purchase.</div>
+          <div style="margin-top:13px;border-left:4px solid #f4c95d;background:#fff9e8;padding:11px 13px;font-size:11px;color:#4b5563;animation:slide 5s ease-in-out 1.05s infinite;"><strong>Do this:</strong> move the lowest-priority goal to maintenance and extend one paid deadline.</div>
         </main>
       </div>`,
   },

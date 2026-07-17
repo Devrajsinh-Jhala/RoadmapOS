@@ -16,6 +16,15 @@ export type Intensity = "chill" | "balanced" | "aggressive";
 
 export type Feasibility = "realistic" | "stretched" | "risky" | "conflicting";
 
+export type ConstraintIssue = {
+  id: string;
+  severity: "warning" | "critical";
+  title: string;
+  detail: string;
+  remedy: string;
+  goalIds: string[];
+};
+
 export type UserProfile = {
   id: string;
   userId: string;
@@ -51,8 +60,16 @@ export type GoalAssessment = {
   goalId: string;
   title: string;
   feasibility: Feasibility;
+  sequenceRank: number;
+  monthsRemaining: number;
+  amountRemaining: number;
+  savingsAllocated: number;
   requiredMonthly: number;
   requiredWeeklyHours: number;
+  moneyUtilization: number;
+  timeUtilization: number;
+  recommendedAction: string;
+  suggestedDeadline?: string;
   notes: string[];
 };
 
@@ -61,14 +78,26 @@ export type ConstraintReport = {
   monthlyIncome: number;
   fixedExpenses: number;
   monthlySurplus: number;
+  safeMonthlyCapacity: number;
+  remainingMonthlyCapacity: number;
+  monthlyBuffer: number;
   currentSavings: number;
+  emergencyFundTarget: number;
+  protectedSavings: number;
+  allocatableSavings: number;
   totalRequiredMonthly: number;
   moneyUtilization: number;
   dailyAvailableMinutes: number;
+  safeDailyMinutes: number;
+  remainingDailyMinutes: number;
   committedDailyMinutes: number;
   timeUtilization: number;
+  readinessScore: number;
+  primaryWarning: string;
+  issues: ConstraintIssue[];
   conflicts: string[];
   recommendations: string[];
+  nextActions: string[];
   goalAssessments: GoalAssessment[];
 };
 

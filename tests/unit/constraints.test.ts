@@ -19,6 +19,8 @@ const profile: UserProfile = {
   onboarded: true,
 };
 
+const now = new Date("2026-07-17T00:00:00+05:30");
+
 function goal(input: Partial<Goal>): Goal {
   return {
     id: input.id ?? "goal",
@@ -40,10 +42,13 @@ describe("analyzeConstraints", () => {
     const report = analyzeConstraints(profile, [
       goal({ title: "DSA", weeklyHours: 5 }),
       goal({ title: "Gym", domain: "health", weeklyHours: 4 }),
-    ]);
+    ], now);
 
     expect(report.conflicts).toHaveLength(0);
     expect(["realistic", "stretched"]).toContain(report.feasibility);
+    expect(report.safeMonthlyCapacity).toBe(60000);
+    expect(report.monthlyBuffer).toBe(20000);
+    expect(report.safeDailyMinutes).toBe(112.5);
   });
 
   it("detects when money goals exceed monthly surplus", () => {
@@ -54,10 +59,11 @@ describe("analyzeConstraints", () => {
         targetAmount: 1800000,
         deadline: "2026-10-01",
       }),
-    ]);
+    ], now);
 
     expect(report.feasibility).toBe("conflicting");
-    expect(report.conflicts.join(" ")).toContain("monthly money");
+    expect(report.issues.some((issue) => issue.id === "money-overload")).toBe(true);
+    expect(report.primaryWarning).toContain("safe limit");
   });
 
   it("detects house delays from lifestyle purchases", () => {
@@ -67,7 +73,7 @@ describe("analyzeConstraints", () => {
         title: "House down payment",
         domain: "wealth",
         targetAmount: 2500000,
-        deadline: "2028-07-01",
+        deadline: "2030-07-01",
       }),
       goal({
         id: "watch",
@@ -76,9 +82,14 @@ describe("analyzeConstraints", () => {
         targetAmount: 45000,
         deadline: "2026-09-01",
       }),
-    ]);
+    ], now);
 
-    expect(report.conflicts.some((item) => item.includes("Apple Watch"))).toBe(true);
+    expect(report.issues.some((issue) => issue.id.startsWith("sequence-watch"))).toBe(true);
+    expect(report.feasibility).toBe("risky");
+    expect(
+      report.goalAssessments.find((assessment) => assessment.goalId === "watch")
+        ?.feasibility,
+    ).toBe("risky");
   });
 
   it("detects weekly time overload", () => {
@@ -86,9 +97,62 @@ describe("analyzeConstraints", () => {
       goal({ title: "DSA", weeklyHours: 20 }),
       goal({ title: "AI", domain: "skills", weeklyHours: 15 }),
       goal({ title: "Gym", domain: "health", weeklyHours: 10 }),
-    ]);
+    ], now);
 
     expect(report.feasibility).toBe("conflicting");
-    expect(report.conflicts.join(" ")).toContain("weekly commitments");
+    expect(report.issues.some((issue) => issue.id === "time-overload")).toBe(true);
+    expect(report.committedDailyMinutes).toBeGreaterThan(report.safeDailyMinutes);
+  });
+
+  it("protects an emergency reserve and allocates remaining savings only once", () => {
+    const report = analyzeConstraints(profile, [
+      goal({
+        id: "home",
+        title: "Home deposit",
+        domain: "wealth",
+        targetAmount: 800000,
+        priority: 1,
+      }),
+      goal({
+        id: "investments",
+        title: "Investment corpus",
+        domain: "wealth",
+        targetAmount: 800000,
+        priority: 2,
+      }),
+    ], now);
+
+    expect(report.emergencyFundTarget).toBe(270000);
+    expect(report.protectedSavings).toBe(270000);
+    expect(report.allocatableSavings).toBe(730000);
+    expect(
+      report.goalAssessments.reduce(
+        (total, assessment) => total + assessment.savingsAllocated,
+        0,
+      ),
+    ).toBe(730000);
+    expect(report.goalAssessments[0].savingsAllocated).toBe(730000);
+    expect(report.goalAssessments[1].savingsAllocated).toBe(0);
+  });
+
+  it("flags expired deadlines as critical", () => {
+    const report = analyzeConstraints(profile, [
+      goal({ title: "Old deadline", deadline: "2026-01-01" }),
+    ], now);
+
+    expect(report.feasibility).toBe("conflicting");
+    expect(report.issues.some((issue) => issue.id.startsWith("expired-"))).toBe(true);
+    expect(report.goalAssessments[0].recommendedAction).toContain("Extend");
+  });
+
+  it("warns when more than two goals are marked core", () => {
+    const report = analyzeConstraints(profile, [
+      goal({ id: "one", title: "One", priority: 1 }),
+      goal({ id: "two", title: "Two", priority: 1 }),
+      goal({ id: "three", title: "Three", priority: 1 }),
+    ], now);
+
+    expect(report.issues.some((issue) => issue.id === "too-many-core-goals")).toBe(true);
+    expect(report.nextActions.join(" ")).toContain("at most two priority 1 goals");
   });
 });

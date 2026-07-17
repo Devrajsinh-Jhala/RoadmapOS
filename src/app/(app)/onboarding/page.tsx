@@ -22,7 +22,7 @@ export default async function OnboardingPage() {
 
       <PageGuide
         title="Finish this once, then update only when life changes."
-        text="These numbers help the app avoid fantasy plans. Use approximate values; precision can improve later."
+        text="RoadmapOS intentionally leaves part of your money and time unplanned. These inputs decide how large that safety margin should be."
         steps={[
           "Enter monthly money numbers in INR.",
           "Enter free time per day in minutes, not hours.",
@@ -94,9 +94,9 @@ export default async function OnboardingPage() {
                 name="intensity"
                 defaultValue={profile?.intensity ?? "balanced"}
               >
-                <option value="chill">Chill</option>
-                <option value="balanced">Balanced</option>
-                <option value="aggressive">Aggressive</option>
+                <option value="chill">Chill - largest safety margin</option>
+                <option value="balanced">Balanced - recommended</option>
+                <option value="aggressive">Aggressive - smallest safety margin</option>
               </select>
             </Field>
           </div>

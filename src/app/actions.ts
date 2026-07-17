@@ -20,6 +20,7 @@ import {
   logAiRun,
   saveProfile,
   toggleTask,
+  updateGoal,
 } from "@/lib/repository";
 import {
   goalSchema,
@@ -58,6 +59,16 @@ export async function createGoalAction(formData: FormData) {
   redirect("/goals");
 }
 
+export async function updateGoalAction(formData: FormData) {
+  const userId = await getCurrentUserId();
+  const goalId = String(formData.get("goalId") ?? "");
+  const parsed = goalSchema.parse(formObject(formData));
+  await updateGoal(userId, goalId, parsed);
+  revalidatePath("/dashboard");
+  revalidatePath("/goals");
+  revalidatePath("/roadmap");
+}
+
 export async function archiveGoalAction(formData: FormData) {
   const userId = await getCurrentUserId();
   const goalId = String(formData.get("goalId") ?? "");
@@ -73,6 +84,10 @@ export async function generateRoadmapAction() {
 
   if (!snapshot.profile) {
     redirect("/onboarding");
+  }
+
+  if (snapshot.goals.length === 0) {
+    redirect("/goals");
   }
 
   const generated = await generateRoadmap(
@@ -129,13 +144,39 @@ export async function submitWeeklyReviewAction(formData: FormData) {
     weekStart: "",
     aiRecovery: [],
   });
-  await createWeeklyReview(userId, {
+  const review = await createWeeklyReview(userId, {
     ...parsed,
     aiRecovery: recovery,
   });
 
+  if (snapshot.goals.length > 0) {
+    const generated = await generateRoadmap(
+      snapshot.profile,
+      snapshot.goals,
+      snapshot.researchRuns.filter((run) => run.appliedAt),
+      recovery,
+    );
+    await createRoadmapRecord(
+      userId,
+      "weekly-review",
+      generated.roadmap.vision2Year,
+      generated.roadmap,
+      snapshot,
+    );
+    await logAiRun(userId, {
+      kind: "weekly-replan",
+      provider: generated.provider,
+      model: generated.model,
+      promptHash: hashInput({ review, goals: snapshot.goals }),
+      request: { reviewId: review.id, goals: snapshot.goals.length },
+      output: generated.roadmap as unknown as Record<string, unknown>,
+      status: "success",
+    });
+  }
+
   revalidatePath("/dashboard");
   revalidatePath("/review");
+  revalidatePath("/roadmap");
   redirect("/review");
 }
 
@@ -181,7 +222,7 @@ export async function applyResearchAction(formData: FormData) {
   await applyResearchRun(userId, researchId);
 
   const snapshot = await getSnapshot(userId);
-  if (snapshot.profile) {
+  if (snapshot.profile && snapshot.goals.length > 0) {
     const generated = await generateRoadmap(
       snapshot.profile,
       snapshot.goals,
@@ -199,6 +240,11 @@ export async function applyResearchAction(formData: FormData) {
         constraints: analyzeConstraints(snapshot.profile, snapshot.goals),
       },
     );
+  }
+
+  if (snapshot.goals.length === 0) {
+    revalidatePath("/research");
+    redirect("/goals");
   }
 
   revalidatePath("/research");

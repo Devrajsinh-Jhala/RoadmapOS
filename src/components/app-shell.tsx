@@ -1,25 +1,12 @@
 import {
-  ClipboardCheck,
-  Compass,
-  FlaskConical,
-  Home,
   ListChecks,
   LogOut,
   Settings,
-  Target,
 } from "lucide-react";
 import Link from "next/link";
+import { AppNav } from "@/components/app-nav";
 import { signOutAction } from "@/app/login/actions";
 import { isDemoMode } from "@/lib/current-user";
-
-const navItems = [
-  { href: "/dashboard", label: "Today", icon: Home },
-  { href: "/goals", label: "Goals", icon: Target },
-  { href: "/roadmap", label: "Roadmap", icon: Compass },
-  { href: "/review", label: "Review", icon: ClipboardCheck },
-  { href: "/research", label: "Research", icon: FlaskConical },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
 
 export function AppShell({
   userLabel,
@@ -39,42 +26,29 @@ export function AppShell({
             <span className="block text-base font-semibold text-neutral-950">
               RoadmapOS
             </span>
-            <span className="block text-xs text-neutral-500">Asia/Kolkata / INR</span>
+            <span className="block text-xs text-neutral-500">Life planning system</span>
           </span>
         </Link>
 
-        <nav className="mt-8 grid gap-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-950"
-              >
-                <Icon className="size-4" aria-hidden />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="mt-8">
+          <AppNav />
+        </div>
 
-        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50/70 p-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">
-            Use in order
+        <div className="mt-6 border-t border-neutral-200 pt-5">
+          <p className="text-xs font-semibold uppercase text-emerald-800">
+            Planning loop
           </p>
           <ol className="mt-3 grid gap-2 text-xs leading-5 text-neutral-700">
-            <li>1. Onboarding: money, time, blockers</li>
-            <li>2. Goals: add 2 to 4 goals</li>
-            <li>3. Roadmap: generate the sequence</li>
-            <li>4. Today: execute only essentials</li>
-            <li>5. Review: adjust weekly</li>
+            <li>1. Define money and time limits</li>
+            <li>2. Add and sequence life goals</li>
+            <li>3. Execute today&apos;s minimums</li>
+            <li>4. Reset the plan every week</li>
           </ol>
         </div>
 
         <div className="mt-auto rounded-lg border border-neutral-200 bg-neutral-50 p-3">
-          <p className="text-xs uppercase tracking-[0.14em] text-neutral-500">
-            Workspace
+          <p className="text-xs uppercase text-neutral-500">
+            Signed in as
           </p>
           <p className="mt-1 text-sm font-semibold text-neutral-950">{userLabel}</p>
           {isDemoMode() ? (
@@ -105,21 +79,9 @@ export function AppShell({
             <Settings className="size-4" aria-hidden />
           </Link>
         </div>
-        <nav className="mt-3 flex gap-2 overflow-x-auto pb-1">
-          {navItems.slice(0, 5).map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 text-xs font-semibold text-neutral-700"
-              >
-                <Icon className="size-3.5" aria-hidden />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="mt-3">
+          <AppNav mobile />
+        </div>
       </header>
 
       <main className="px-4 py-6 lg:ml-64 lg:px-8 lg:py-8">

@@ -13,17 +13,25 @@ test("demo user can move through the RoadmapOS flow", async ({ page }) => {
   await page.getByLabel("Name").fill("Demo Planner");
   await page.getByLabel("Email").fill("demo@example.com");
   await page.getByRole("button", { name: /^sign in$/i }).click();
-  await expect(page.getByRole("heading", { name: /do only today's essentials/i })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /your life plan, reduced to today/i }),
+  ).toBeVisible();
 
   await page.goto("/goals");
-  await page.getByLabel("Goal title").fill("Side income validation");
-  await page.getByLabel("Domain").selectOption("side-income");
-  await page.getByLabel("Deadline").fill("2027-06-30");
-  await page.getByLabel("Target amount (INR, optional)").fill("0");
-  await page.getByLabel("Weekly time needed (hours)").fill("4");
-  await page.getByLabel("Priority").selectOption("2");
-  await page.getByLabel("Why it matters").fill("Create optionality.");
-  await page.getByRole("button", { name: /add goal/i }).click();
+  const addGoal = page
+    .locator("details")
+    .filter({ hasText: "Add one goal to the plan" })
+    .first();
+  await addGoal.locator("summary").click();
+  const addGoalForm = addGoal.locator("form");
+  await addGoalForm.getByLabel("Goal title").fill("Side income validation");
+  await addGoalForm.getByLabel("Domain").selectOption("side-income");
+  await addGoalForm.getByLabel("Deadline").fill("2027-06-30");
+  await addGoalForm.getByLabel("Target amount (INR, optional)").fill("0");
+  await addGoalForm.getByLabel("Weekly time needed (hours)").fill("4");
+  await addGoalForm.getByLabel("Priority").selectOption("2");
+  await addGoalForm.getByLabel("Why it matters").fill("Create optionality.");
+  await addGoalForm.getByRole("button", { name: /add goal/i }).click();
   await expect(page.getByText("Side income validation")).toBeVisible();
 
   await page.goto("/roadmap");
